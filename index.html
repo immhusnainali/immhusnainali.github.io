@@ -687,7 +687,7 @@
             </ul>
 
             <span class="footer__copy">
-                &#169; 2025. All rights reserved.
+                &#169; <span id="current-year">2025</span>. All rights reserved.
             </span>
         </div>
     </footer>
@@ -705,6 +705,11 @@
 
     <!--=============== MAIN JS ===============-->
     <script src="assets/js/main.js"></script>
+
+    <!--=============== AUTO UPDATE YEAR ===============-->
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
 </body>
 
 </html>
