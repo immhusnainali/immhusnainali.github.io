@@ -143,6 +143,522 @@ themeButton.addEventListener("click", () => {
   localStorage.setItem("selected-icon", getCurrentIcon());
 });
 
+/*=============== MULTI LANGUAGE ===============*/
+const languageSelect = document.getElementById("language-select");
+const defaultLanguage = "en";
+const languageStorageKey = "selected-language";
+
+const languageTargets = [
+  { key: "documentTitle", apply: (value) => (document.title = value) },
+  { key: "homeGreeting", selector: ".home__greeting" },
+  { key: "homeRole", selector: ".home__education" },
+  { key: "homeDownloadCv", selector: ".home__button .button--ghost" },
+  { key: "homeAbout", selector: ".home__button .button:not(.button--ghost)" },
+  { key: "homeScrollDown", selector: ".home__scroll-name" },
+  { key: "aboutSubtitle", selector: "#about .section__subtitle" },
+  { key: "aboutTitle", selector: "#about .section__title" },
+  {
+    key: "aboutExperienceTitle",
+    selector: "#about .about__box:nth-child(1) .about__title",
+  },
+  {
+    key: "aboutExperienceSubtitle",
+    selector: "#about .about__box:nth-child(1) .about__subtitle",
+  },
+  {
+    key: "aboutCompletedTitle",
+    selector: "#about .about__box:nth-child(2) .about__title",
+  },
+  {
+    key: "aboutCompletedSubtitle",
+    selector: "#about .about__box:nth-child(2) .about__subtitle",
+  },
+  { key: "aboutSupportTitle", selector: "#about .about__box:nth-child(3) .about__title" },
+  {
+    key: "aboutSupportSubtitle",
+    selector: "#about .about__box:nth-child(3) .about__subtitle",
+  },
+  { key: "aboutDescription", selector: "#about .about__description" },
+  { key: "aboutContactBtn", selector: "#about .about__button-contact" },
+  { key: "skillsSubtitle", selector: "#skills .section__subtitle" },
+  { key: "skillsTitle", selector: "#skills .section__title" },
+  { key: "skillsFrontendTitle", selector: "#skills .skills__content:nth-child(1) .skills__title" },
+  { key: "skillsBackendTitle", selector: "#skills .skills__content:nth-child(2) .skills__title" },
+  { key: "servicesSubtitle", selector: ".services.section .section__subtitle" },
+  { key: "servicesTitle", selector: ".services.section .section__title" },
+  { key: "servicesCard1Title", selector: ".services__card:nth-child(1) .services__title", property: "innerHTML" },
+  { key: "servicesCard2Title", selector: ".services__card:nth-child(2) > .services__title", property: "innerHTML" },
+  { key: "servicesCard3Title", selector: ".services__card:nth-child(3) > .services__title", property: "innerHTML" },
+  { key: "servicesSeeMore", selector: ".services__button", property: "innerHTML" },
+  { key: "servicesModal1Title", selector: ".services__card:nth-child(1) .services__modal-title" },
+  { key: "servicesModal1Description", selector: ".services__card:nth-child(1) .services__modal-description" },
+  { key: "servicesModal2Title", selector: ".services__card:nth-child(2) .services__modal-title" },
+  { key: "servicesModal2Description", selector: ".services__card:nth-child(2) .services__modal-description" },
+  { key: "servicesModal3Title", selector: ".services__card:nth-child(3) .services__modal-title" },
+  { key: "servicesModal3Description", selector: ".services__card:nth-child(3) .services__modal-description" },
+  { key: "workSubtitle", selector: "#work .section__subtitle" },
+  { key: "workTitle", selector: "#work .section__title" },
+  { key: "workFilterAll", selector: ".work__filters .work__item:nth-child(1)" },
+  { key: "workFilterWeb", selector: ".work__filters .work__item:nth-child(2)" },
+  { key: "workFilterDesktop", selector: ".work__filters .work__item:nth-child(3)" },
+  { key: "workFilterDesign", selector: ".work__filters .work__item:nth-child(4)" },
+  { key: "workCard1Title", selector: ".work__card:nth-child(1) .work__title" },
+  { key: "workCard2Title", selector: ".work__card:nth-child(2) .work__title" },
+  { key: "workCard3Title", selector: ".work__card:nth-child(3) .work__title" },
+  { key: "workCard4Title", selector: ".work__card:nth-child(4) .work__title" },
+  { key: "workDemoButton", selector: ".work__button", property: "innerHTML" },
+  { key: "testimonialSubtitle", selector: ".testimonial.section .section__subtitle" },
+  { key: "testimonialTitle", selector: ".testimonial.section .section__title" },
+  { key: "contactSubtitle", selector: "#contact .section__subtitle" },
+  { key: "contactTitle", selector: "#contact .section__title" },
+  { key: "contactTalkToMe", selector: "#contact .contact__title-info" },
+  { key: "contactCardEmail", selector: "#contact .contact__card:nth-child(1) .contact__card-title" },
+  { key: "contactCardWhatsapp", selector: "#contact .contact__card:nth-child(2) .contact__card-title" },
+  { key: "contactCardTwitter", selector: "#contact .contact__card:nth-child(3) .contact__card-title" },
+  { key: "contactWriteMe", selector: ".contact__button", property: "innerHTML" },
+  { key: "contactFormTitle", selector: "#contact .contact__title-form" },
+  { key: "contactFullNameLabel", selector: "label[for='full-name']" },
+  { key: "contactFullNamePlaceholder", selector: "#full-name", property: "placeholder" },
+  { key: "contactMailLabel", selector: "label[for='email-address']" },
+  { key: "contactMailPlaceholder", selector: "#email-address", property: "placeholder" },
+  { key: "contactMessageLabel", selector: "label[for='message']" },
+  { key: "contactMessagePlaceholder", selector: "#message", property: "placeholder" },
+  { key: "contactSendMessage", selector: "#contact .contact__form button.button" },
+  { key: "footerHome", selector: ".footer__item:nth-child(1) .footer__link" },
+  { key: "footerAbout", selector: ".footer__item:nth-child(2) .footer__link" },
+  { key: "footerSkills", selector: ".footer__item:nth-child(3) .footer__link" },
+  { key: "footerWork", selector: ".footer__item:nth-child(4) .footer__link" },
+  { key: "footerContact", selector: ".footer__item:nth-child(5) .footer__link" },
+];
+
+const skillLevelTranslations = {
+  en: { advanced: "Advanced", intermediate: "Intermediate", medium: "Medium" },
+  ur: { advanced: "Mahir", intermediate: "Darmiyani", medium: "Darmiyani" },
+  es: { advanced: "Avanzado", intermediate: "Intermedio", medium: "Medio" },
+  fr: { advanced: "Avance", intermediate: "Intermediaire", medium: "Moyen" },
+  ar: { advanced: "متقدم", intermediate: "متوسط", medium: "متوسط" },
+};
+
+const translations = {
+  en: {
+    documentTitle: "Muhammad Husnain Ali | Portfolio",
+    homeGreeting: "Hello, I'm",
+    homeRole: "Software Engineer",
+    homeDownloadCv: "Download CV",
+    homeAbout: "About",
+    homeScrollDown: "Scroll Down",
+    aboutSubtitle: "My Intro",
+    aboutTitle: "About Me",
+    aboutExperienceTitle: "Experience",
+    aboutExperienceSubtitle: "2 Years Working",
+    aboutCompletedTitle: "Completed",
+    aboutCompletedSubtitle: "10+ Projects",
+    aboutSupportTitle: "Support",
+    aboutSupportSubtitle: "Online 24/7",
+    aboutDescription:
+      "As a Software Engineer, I specialize in building web pages with modern UI/UX, as well as developing robust desktop applications. With years of experience, I have successfully completed numerous projects and earned the satisfaction of many clients.",
+    aboutContactBtn: "Contact Me",
+    skillsSubtitle: "My Abilities",
+    skillsTitle: "My Experience",
+    skillsFrontendTitle: "Frontend Development",
+    skillsBackendTitle: "Backend Development",
+    servicesSubtitle: "My Services",
+    servicesTitle: "What I Offer",
+    servicesCard1Title: "Web <br> Development",
+    servicesCard2Title: "UI/UX <br> Designing",
+    servicesCard3Title: "Desktop Application <br> Development",
+    servicesSeeMore: "See More <i class='bx bx-right-arrow services__icon'></i>",
+    servicesModal1Title: "Web Development",
+    servicesModal1Description:
+      "I design and develop modern, responsive websites tailored to meet both customer and market needs, using a creative and hands-on approach.",
+    servicesModal2Title: "UI/UX Designing",
+    servicesModal2Description:
+      "I design and develop consumer products with a creative and hands-on approach, ensuring they meet both customer and market needs and trends.",
+    servicesModal3Title: "Desktop Application",
+    servicesModal3Description:
+      "I design and develop desktop applications with a creative and hands-on approach, ensuring they meet both customer and market needs.",
+    workSubtitle: "My Portfolio",
+    workTitle: "Recent Works",
+    workFilterAll: "All",
+    workFilterWeb: "Web",
+    workFilterDesktop: "Desktop",
+    workFilterDesign: "UI/UX Design",
+    workCard1Title: "Web Application",
+    workCard2Title: "Desktop Application",
+    workCard3Title: "Web Design",
+    workCard4Title: "App Design",
+    workDemoButton: "Demo <i class='bx bx-right-arrow work__icon'></i>",
+    testimonialSubtitle: "My clients say",
+    testimonialTitle: "Testimonials",
+    contactSubtitle: "Get in touch",
+    contactTitle: "Contact Me",
+    contactTalkToMe: "Talk to me",
+    contactCardEmail: "Email",
+    contactCardWhatsapp: "Whatsapp",
+    contactCardTwitter: "Twitter",
+    contactWriteMe: "Write Me <i class='bx bx-right-arrow contact__button-icon'></i>",
+    contactFormTitle: "Write Me your Message",
+    contactFullNameLabel: "Full Name",
+    contactFullNamePlaceholder: "Enter name",
+    contactMailLabel: "Mail",
+    contactMailPlaceholder: "Enter email",
+    contactMessageLabel: "Message",
+    contactMessagePlaceholder: "Write your Message",
+    contactSendMessage: "Send Message",
+    footerHome: "Home",
+    footerAbout: "About",
+    footerSkills: "Skills",
+    footerWork: "Work",
+    footerContact: "Contact",
+  },
+  ur: {
+    documentTitle: "Muhammad Husnain Ali | Portfolio",
+    homeGreeting: "Assalam o Alaikum, Main hoon",
+    homeRole: "Software Engineer",
+    homeDownloadCv: "CV Download karein",
+    homeAbout: "Mere bare mein",
+    homeScrollDown: "Neeche scroll karein",
+    aboutSubtitle: "Mera Intro",
+    aboutTitle: "Mere bare mein",
+    aboutExperienceTitle: "Tajurba",
+    aboutExperienceSubtitle: "2 saal kaam ka tajurba",
+    aboutCompletedTitle: "Mukammal",
+    aboutCompletedSubtitle: "10+ Projects",
+    aboutSupportTitle: "Support",
+    aboutSupportSubtitle: "Online 24/7",
+    aboutDescription:
+      "Main Software Engineer hoon aur modern UI/UX wali web pages aur mazboot desktop applications banata hoon. Kai saalon ke tajurbe ke sath main ne bohat se projects kamyabi se mukammal kiye hain.",
+    aboutContactBtn: "Rabta karein",
+    skillsSubtitle: "Meri Salahiyatein",
+    skillsTitle: "Mera Tajurba",
+    skillsFrontendTitle: "Frontend Development",
+    skillsBackendTitle: "Backend Development",
+    servicesSubtitle: "Meri Khidmaat",
+    servicesTitle: "Main Kya Offer Karta Hoon",
+    servicesCard1Title: "Web <br> Development",
+    servicesCard2Title: "UI/UX <br> Designing",
+    servicesCard3Title: "Desktop Application <br> Development",
+    servicesSeeMore: "Mazeed dekhein <i class='bx bx-right-arrow services__icon'></i>",
+    servicesModal1Title: "Web Development",
+    servicesModal1Description:
+      "Main modern aur responsive websites design aur develop karta hoon jo customer aur market ki zarooriyat ko poora karti hain.",
+    servicesModal2Title: "UI/UX Designing",
+    servicesModal2Description:
+      "Main creative approach ke sath user friendly products design aur develop karta hoon jo market trends se match karte hain.",
+    servicesModal3Title: "Desktop Application",
+    servicesModal3Description:
+      "Main desktop applications design aur develop karta hoon jo customer aur market ki zarooriyat ke mutabiq hoti hain.",
+    workSubtitle: "Mera Portfolio",
+    workTitle: "Halia Kaam",
+    workFilterAll: "Sab",
+    workFilterWeb: "Web",
+    workFilterDesktop: "Desktop",
+    workFilterDesign: "UI/UX Design",
+    workCard1Title: "Web Application",
+    workCard2Title: "Desktop Application",
+    workCard3Title: "Web Design",
+    workCard4Title: "App Design",
+    workDemoButton: "Demo dekhein <i class='bx bx-right-arrow work__icon'></i>",
+    testimonialSubtitle: "Clients kya kehte hain",
+    testimonialTitle: "Reviews",
+    contactSubtitle: "Rabta karein",
+    contactTitle: "Mujh se Rabta Karein",
+    contactTalkToMe: "Mujh se baat karein",
+    contactCardEmail: "Email",
+    contactCardWhatsapp: "Whatsapp",
+    contactCardTwitter: "Twitter",
+    contactWriteMe: "Mujhe likhein <i class='bx bx-right-arrow contact__button-icon'></i>",
+    contactFormTitle: "Apna Paigham Likhein",
+    contactFullNameLabel: "Pura Naam",
+    contactFullNamePlaceholder: "Naam likhein",
+    contactMailLabel: "Email",
+    contactMailPlaceholder: "Email likhein",
+    contactMessageLabel: "Paigham",
+    contactMessagePlaceholder: "Apna paigham likhein",
+    contactSendMessage: "Paigham bhejein",
+    footerHome: "Home",
+    footerAbout: "About",
+    footerSkills: "Skills",
+    footerWork: "Work",
+    footerContact: "Contact",
+  },
+  es: {
+    documentTitle: "Muhammad Husnain Ali | Portafolio",
+    homeGreeting: "Hola, soy",
+    homeRole: "Ingeniero de Software",
+    homeDownloadCv: "Descargar CV",
+    homeAbout: "Sobre mi",
+    homeScrollDown: "Desplazar abajo",
+    aboutSubtitle: "Mi introduccion",
+    aboutTitle: "Sobre mi",
+    aboutExperienceTitle: "Experiencia",
+    aboutExperienceSubtitle: "2 anos trabajando",
+    aboutCompletedTitle: "Completado",
+    aboutCompletedSubtitle: "10+ Proyectos",
+    aboutSupportTitle: "Soporte",
+    aboutSupportSubtitle: "En linea 24/7",
+    aboutDescription:
+      "Como Ingeniero de Software, me especializo en construir paginas web con UI/UX moderna y en desarrollar aplicaciones de escritorio robustas. Con anos de experiencia, complete muchos proyectos con clientes satisfechos.",
+    aboutContactBtn: "Contactame",
+    skillsSubtitle: "Mis habilidades",
+    skillsTitle: "Mi experiencia",
+    skillsFrontendTitle: "Desarrollo Frontend",
+    skillsBackendTitle: "Desarrollo Backend",
+    servicesSubtitle: "Mis servicios",
+    servicesTitle: "Lo que ofrezco",
+    servicesCard1Title: "Desarrollo <br> Web",
+    servicesCard2Title: "Diseno <br> UI/UX",
+    servicesCard3Title: "Desarrollo de <br> App de Escritorio",
+    servicesSeeMore: "Ver mas <i class='bx bx-right-arrow services__icon'></i>",
+    servicesModal1Title: "Desarrollo Web",
+    servicesModal1Description:
+      "Diseno y desarrollo sitios web modernos y responsivos, adaptados a las necesidades del cliente y del mercado.",
+    servicesModal2Title: "Diseno UI/UX",
+    servicesModal2Description:
+      "Diseno y desarrollo productos para usuarios con un enfoque practico y creativo, alineado con tendencias del mercado.",
+    servicesModal3Title: "Aplicacion de Escritorio",
+    servicesModal3Description:
+      "Diseno y desarrollo aplicaciones de escritorio con un enfoque practico y creativo para necesidades reales.",
+    workSubtitle: "Mi portafolio",
+    workTitle: "Trabajos recientes",
+    workFilterAll: "Todo",
+    workFilterWeb: "Web",
+    workFilterDesktop: "Escritorio",
+    workFilterDesign: "Diseno UI/UX",
+    workCard1Title: "Aplicacion Web",
+    workCard2Title: "Aplicacion de Escritorio",
+    workCard3Title: "Diseno Web",
+    workCard4Title: "Diseno de App",
+    workDemoButton: "Demo <i class='bx bx-right-arrow work__icon'></i>",
+    testimonialSubtitle: "Lo que dicen mis clientes",
+    testimonialTitle: "Testimonios",
+    contactSubtitle: "Ponte en contacto",
+    contactTitle: "Contactame",
+    contactTalkToMe: "Habla conmigo",
+    contactCardEmail: "Correo",
+    contactCardWhatsapp: "Whatsapp",
+    contactCardTwitter: "Twitter",
+    contactWriteMe: "Escribeme <i class='bx bx-right-arrow contact__button-icon'></i>",
+    contactFormTitle: "Escribe tu mensaje",
+    contactFullNameLabel: "Nombre completo",
+    contactFullNamePlaceholder: "Ingresa nombre",
+    contactMailLabel: "Correo",
+    contactMailPlaceholder: "Ingresa correo",
+    contactMessageLabel: "Mensaje",
+    contactMessagePlaceholder: "Escribe tu mensaje",
+    contactSendMessage: "Enviar mensaje",
+    footerHome: "Inicio",
+    footerAbout: "Sobre mi",
+    footerSkills: "Habilidades",
+    footerWork: "Trabajo",
+    footerContact: "Contacto",
+  },
+  fr: {
+    documentTitle: "Muhammad Husnain Ali | Portfolio",
+    homeGreeting: "Bonjour, je suis",
+    homeRole: "Ingenieur Logiciel",
+    homeDownloadCv: "Telecharger CV",
+    homeAbout: "A propos",
+    homeScrollDown: "Defiler vers le bas",
+    aboutSubtitle: "Mon intro",
+    aboutTitle: "A propos de moi",
+    aboutExperienceTitle: "Experience",
+    aboutExperienceSubtitle: "2 ans de travail",
+    aboutCompletedTitle: "Termine",
+    aboutCompletedSubtitle: "10+ Projets",
+    aboutSupportTitle: "Support",
+    aboutSupportSubtitle: "En ligne 24/7",
+    aboutDescription:
+      "En tant qu'Ingenieur Logiciel, je cree des pages web avec une UI/UX moderne et des applications desktop robustes. Avec des annees d'experience, j'ai livre de nombreux projets avec satisfaction client.",
+    aboutContactBtn: "Contactez-moi",
+    skillsSubtitle: "Mes competences",
+    skillsTitle: "Mon experience",
+    skillsFrontendTitle: "Developpement Frontend",
+    skillsBackendTitle: "Developpement Backend",
+    servicesSubtitle: "Mes services",
+    servicesTitle: "Ce que je propose",
+    servicesCard1Title: "Developpement <br> Web",
+    servicesCard2Title: "Design <br> UI/UX",
+    servicesCard3Title: "Developpement <br> d'application Desktop",
+    servicesSeeMore: "Voir plus <i class='bx bx-right-arrow services__icon'></i>",
+    servicesModal1Title: "Developpement Web",
+    servicesModal1Description:
+      "Je concois et developpe des sites web modernes et responsives adaptes aux besoins du client et du marche.",
+    servicesModal2Title: "Design UI/UX",
+    servicesModal2Description:
+      "Je concois et developpe des produits avec une approche pratique et creative adaptee aux besoins et tendances du marche.",
+    servicesModal3Title: "Application Desktop",
+    servicesModal3Description:
+      "Je concois et developpe des applications desktop avec une approche pratique et creative pour des besoins reels.",
+    workSubtitle: "Mon portfolio",
+    workTitle: "Travaux recents",
+    workFilterAll: "Tous",
+    workFilterWeb: "Web",
+    workFilterDesktop: "Desktop",
+    workFilterDesign: "Design UI/UX",
+    workCard1Title: "Application Web",
+    workCard2Title: "Application Desktop",
+    workCard3Title: "Design Web",
+    workCard4Title: "Design App",
+    workDemoButton: "Demo <i class='bx bx-right-arrow work__icon'></i>",
+    testimonialSubtitle: "Ce que disent mes clients",
+    testimonialTitle: "Temoignages",
+    contactSubtitle: "Entrer en contact",
+    contactTitle: "Contactez-moi",
+    contactTalkToMe: "Parlez-moi",
+    contactCardEmail: "Email",
+    contactCardWhatsapp: "Whatsapp",
+    contactCardTwitter: "Twitter",
+    contactWriteMe: "Ecrivez-moi <i class='bx bx-right-arrow contact__button-icon'></i>",
+    contactFormTitle: "Ecrivez votre message",
+    contactFullNameLabel: "Nom complet",
+    contactFullNamePlaceholder: "Entrez le nom",
+    contactMailLabel: "Email",
+    contactMailPlaceholder: "Entrez l'email",
+    contactMessageLabel: "Message",
+    contactMessagePlaceholder: "Ecrivez votre message",
+    contactSendMessage: "Envoyer le message",
+    footerHome: "Accueil",
+    footerAbout: "A propos",
+    footerSkills: "Competences",
+    footerWork: "Travail",
+    footerContact: "Contact",
+  },
+  ar: {
+    documentTitle: "محمد حسنين علي | ملف الاعمال",
+    homeGreeting: "مرحبا، انا",
+    homeRole: "مهندس برمجيات",
+    homeDownloadCv: "تحميل السيرة الذاتية",
+    homeAbout: "نبذة عني",
+    homeScrollDown: "مرر للاسفل",
+    aboutSubtitle: "مقدمتي",
+    aboutTitle: "نبذة عني",
+    aboutExperienceTitle: "الخبرة",
+    aboutExperienceSubtitle: "سنتان من العمل",
+    aboutCompletedTitle: "المشاريع المنجزة",
+    aboutCompletedSubtitle: "10+ مشاريع",
+    aboutSupportTitle: "الدعم",
+    aboutSupportSubtitle: "متاح 24/7",
+    aboutDescription:
+      "بصفتي مهندس برمجيات، اتخصص في بناء صفحات ويب بواجهة حديثة وتطوير تطبيقات سطح مكتب قوية. مع سنوات من الخبرة، انجزت العديد من المشاريع بنجاح ونلت رضا العملاء.",
+    aboutContactBtn: "تواصل معي",
+    skillsSubtitle: "مهاراتي",
+    skillsTitle: "خبرتي",
+    skillsFrontendTitle: "تطوير الواجهة الامامية",
+    skillsBackendTitle: "تطوير الواجهة الخلفية",
+    servicesSubtitle: "خدماتي",
+    servicesTitle: "ما الذي اقدمه",
+    servicesCard1Title: "تطوير <br> الويب",
+    servicesCard2Title: "تصميم <br> UI/UX",
+    servicesCard3Title: "تطوير تطبيقات <br> سطح المكتب",
+    servicesSeeMore: "عرض المزيد <i class='bx bx-right-arrow services__icon'></i>",
+    servicesModal1Title: "تطوير الويب",
+    servicesModal1Description:
+      "اصمم واطور مواقع ويب حديثة ومتجاوبة تلبي احتياجات العميل والسوق باستخدام اسلوب عملي ومبدع.",
+    servicesModal2Title: "تصميم UI/UX",
+    servicesModal2Description:
+      "اصمم واطور منتجات المستخدمين بطريقة عملية ومبدعة لضمان توافقها مع احتياجات السوق واتجاهاته.",
+    servicesModal3Title: "تطبيق سطح المكتب",
+    servicesModal3Description:
+      "اصمم واطور تطبيقات سطح المكتب بطريقة عملية ومبدعة لتلبية احتياجات العملاء والسوق.",
+    workSubtitle: "اعمالي",
+    workTitle: "احدث الاعمال",
+    workFilterAll: "الكل",
+    workFilterWeb: "ويب",
+    workFilterDesktop: "سطح المكتب",
+    workFilterDesign: "تصميم UI/UX",
+    workCard1Title: "تطبيق ويب",
+    workCard2Title: "تطبيق سطح المكتب",
+    workCard3Title: "تصميم ويب",
+    workCard4Title: "تصميم تطبيق",
+    workDemoButton: "عرض تجريبي <i class='bx bx-right-arrow work__icon'></i>",
+    testimonialSubtitle: "ماذا يقول عملائي",
+    testimonialTitle: "آراء العملاء",
+    contactSubtitle: "ابق على تواصل",
+    contactTitle: "تواصل معي",
+    contactTalkToMe: "تحدث معي",
+    contactCardEmail: "البريد الالكتروني",
+    contactCardWhatsapp: "واتساب",
+    contactCardTwitter: "تويتر",
+    contactWriteMe: "اكتب لي <i class='bx bx-right-arrow contact__button-icon'></i>",
+    contactFormTitle: "اكتب رسالتك",
+    contactFullNameLabel: "الاسم الكامل",
+    contactFullNamePlaceholder: "ادخل الاسم",
+    contactMailLabel: "البريد",
+    contactMailPlaceholder: "ادخل البريد",
+    contactMessageLabel: "الرسالة",
+    contactMessagePlaceholder: "اكتب رسالتك",
+    contactSendMessage: "ارسال الرسالة",
+    footerHome: "الرئيسية",
+    footerAbout: "نبذة",
+    footerSkills: "المهارات",
+    footerWork: "الاعمال",
+    footerContact: "التواصل",
+  },
+};
+
+document.querySelectorAll("#skills .skills__level").forEach((level) => {
+  const token = level.textContent.trim().toLowerCase();
+  if (skillLevelTranslations.en[token]) {
+    level.dataset.levelToken = token;
+  }
+});
+
+function applySkillLevelTranslations(language) {
+  const levelPack = skillLevelTranslations[language] || skillLevelTranslations[defaultLanguage];
+
+  document.querySelectorAll("#skills .skills__level[data-level-token]").forEach((level) => {
+    const token = level.dataset.levelToken;
+    if (levelPack[token]) {
+      level.textContent = levelPack[token];
+    }
+  });
+}
+
+function applyLanguage(language) {
+  const languagePack = translations[language] || translations[defaultLanguage];
+
+  languageTargets.forEach((target) => {
+    const value = languagePack[target.key];
+    if (typeof value === "undefined") return;
+
+    if (typeof target.apply === "function") {
+      target.apply(value);
+      return;
+    }
+
+    const elements = document.querySelectorAll(target.selector);
+    if (!elements.length) return;
+
+    elements.forEach((element) => {
+      const property = target.property || "textContent";
+      element[property] = value;
+    });
+  });
+
+  applySkillLevelTranslations(language);
+  document.documentElement.setAttribute("lang", language);
+  document.documentElement.setAttribute("dir", language === "ar" ? "rtl" : "ltr");
+
+  if (swiperTestimonial && typeof swiperTestimonial.update === "function") {
+    swiperTestimonial.update();
+  }
+}
+
+const storedLanguage = localStorage.getItem(languageStorageKey);
+const initialLanguage = translations[storedLanguage] ? storedLanguage : defaultLanguage;
+
+if (languageSelect) {
+  languageSelect.value = initialLanguage;
+  languageSelect.addEventListener("change", (event) => {
+    const nextLanguage = event.target.value;
+    applyLanguage(nextLanguage);
+    localStorage.setItem(languageStorageKey, nextLanguage);
+  });
+}
+
+applyLanguage(initialLanguage);
+
 /*=============== SCROLL REVEAL ANIMATION ===============*/
 const sr = ScrollReveal({
   origin: "top",

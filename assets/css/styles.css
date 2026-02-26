@@ -249,6 +249,27 @@ body.light-theme {
   color: var(--first-color-alt);
 }
 
+.nav__actions {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.language-select {
+  width: 4.25rem;
+  background-color: var(--container-color);
+  color: var(--title-color);
+  border: 1px solid var(--first-color-alt);
+  border-radius: 0.5rem;
+  padding: 0.2rem 0.35rem;
+  font-size: var(--tiny-font-size);
+  outline: none;
+}
+
+.language-select:focus {
+  border-color: var(--first-color);
+}
+
 .nav__menu {
   position: fixed;
   bottom: 1rem;
@@ -734,6 +755,16 @@ body.light-theme {
 
 .swiper-pagination-bullet-active {
   background-color: var(--first-color);
+}
+
+/* Keep Swiper layout stable when page direction is RTL */
+html[dir="rtl"] .testimonial__container {
+  direction: ltr;
+}
+
+html[dir="rtl"] .testimonial__card {
+  direction: rtl;
+  text-align: right;
 }
 
 /*=============== CONTACT ===============*/
