@@ -91,6 +91,13 @@
                 <div class="home__data">
                     <span class="home__greeting">Hello, I'm</span>
                     <h1 class="home__name">MUHAMMAD HUSNAIN ALI</h1>
+                    <div class="home__rating" id="home-rating-summary" aria-live="polite">
+                        <span class="home__rating-stars" id="home-rating-stars">&#9734;&#9734;&#9734;&#9734;&#9734;</span>
+                        <span class="home__rating-text">
+                            <span id="home-rating-value">0.0</span>/5
+                            (<span id="home-rating-count">0</span> <span id="home-rating-label">reviews</span>)
+                        </span>
+                    </div>
                     <h3 class="home__education">Software Engineer</h3>
 
                     <div class="home__button">
@@ -100,6 +107,10 @@
 
                         <a href="#about" class="button">About</a>
                     </div>
+
+                    <button type="button" class="button review-open-button" id="open-review-modal">
+                        Add Review
+                    </button>
                 </div>
 
                 <div class="home__handle">
@@ -573,6 +584,47 @@
                 <div class="swiper-pagination"></div>
             </div>              
         </section>
+
+        <div class="review-modal" id="review-modal" aria-hidden="true">
+            <div class="review-modal__content" role="dialog" aria-modal="true" aria-labelledby="review-modal-title">
+                <button class="review-modal__close" type="button" id="close-review-modal" aria-label="Close review form">
+                    <i class='bx bx-x'></i>
+                </button>
+
+                <h3 class="review-modal__title" id="review-modal-title">Add a Review</h3>
+
+                <form id="review-form" class="review__form">
+                    <div class="review__field">
+                        <label class="review__label" for="review-name">Your Name</label>
+                        <input class="review__input" type="text" id="review-name" maxlength="60" placeholder="Enter your name">
+                    </div>
+
+                    <div class="review__field">
+                        <label class="review__label" for="review-rating">Rating</label>
+                        <select class="review__input" id="review-rating" required>
+                            <option value="5">5 - Excellent</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="3">3 - Good</option>
+                            <option value="2">2 - Fair</option>
+                            <option value="1">1 - Poor</option>
+                        </select>
+                    </div>
+
+                    <div class="review__field">
+                        <label class="review__label" for="review-message">Message (Optional)</label>
+                        <textarea class="review__input review__textarea" id="review-message" rows="4" maxlength="240" placeholder="Write your review"></textarea>
+                    </div>
+
+                    <div class="review__actions">
+                        <button class="button" type="submit">Submit Review</button>
+                    </div>
+
+                    <p class="review__note" id="review-status">
+                        Published reviews are visible to everyone.
+                    </p>
+                </form>
+            </div>
+        </div>
 
         <!--=============== CONTACT ===============-->
         <section class="contact section" id="contact">

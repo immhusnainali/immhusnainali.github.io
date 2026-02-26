@@ -176,7 +176,8 @@ body.light-theme {
 .light-theme .work__card,
 .light-theme .testimonial__card,
 .light-theme .contact__card,
-.light-theme .contact__form-div {
+.light-theme .contact__form-div,
+.light-theme .review-modal__content {
   box-shadow: 0 2px 16px hsla(var(--second-hue), 48%, 8%, 0.1);
 }
 
@@ -349,6 +350,22 @@ body.light-theme {
   color: var(--first-color);
 }
 
+.home__rating {
+  display: grid;
+  justify-content: center;
+  row-gap: 0.2rem;
+  margin: 0.65rem 0 0.5rem;
+}
+
+.home__rating-stars {
+  color: var(--first-color);
+  letter-spacing: 0.1rem;
+}
+
+.home__rating-text {
+  font-size: var(--small-font-size);
+}
+
 .home__img {
   width: 200px;
 }
@@ -375,6 +392,10 @@ body.light-theme {
   justify-content: center;
   align-items: center;
   gap: 1rem;
+}
+
+.review-open-button {
+  margin-top: 1rem;
 }
 
 .home__social,
@@ -765,6 +786,103 @@ html[dir="rtl"] .testimonial__container {
 html[dir="rtl"] .testimonial__card {
   direction: rtl;
   text-align: right;
+}
+
+/*=============== REVIEW ===============*/
+.review-modal {
+  position: fixed;
+  inset: 0;
+  background-color: hsl(var(--second-hue), 28%, 16%, 0.7);
+  padding: 2rem 1rem;
+  display: grid;
+  place-items: center;
+  transition: 0.4s;
+  z-index: var(--z-modal);
+  visibility: hidden;
+  opacity: 0;
+}
+
+.review-modal.active-review-modal {
+  visibility: visible;
+  opacity: 1;
+}
+
+.review-modal__content {
+  width: min(100%, 560px);
+  background-color: var(--body-color);
+  border-radius: 1.25rem;
+  padding: 2.25rem 1.5rem 1.5rem;
+  position: relative;
+}
+
+.review-modal__close {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  font-size: 1.5rem;
+  color: var(--first-color);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.review-modal__title {
+  color: var(--first-color);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.review__form {
+  display: grid;
+  row-gap: 1rem;
+}
+
+.review__field {
+  display: grid;
+  row-gap: 0.35rem;
+}
+
+.review__label {
+  color: var(--title-color);
+  font-size: var(--small-font-size);
+}
+
+.review__input {
+  width: 100%;
+  border: 2px solid var(--text-color-light);
+  background: none;
+  border-radius: 0.75rem;
+  padding: 0.8rem 1rem;
+  color: var(--text-color);
+  outline: none;
+}
+
+.review__input:focus {
+  border-color: var(--first-color);
+}
+
+.review__textarea {
+  resize: vertical;
+  min-height: 7rem;
+}
+
+.review__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.review__note {
+  font-size: var(--small-font-size);
+}
+
+html[dir="rtl"] .review__form {
+  text-align: right;
+}
+
+html[dir="rtl"] .review-modal__close {
+  right: auto;
+  left: 0.9rem;
 }
 
 /*=============== CONTACT ===============*/

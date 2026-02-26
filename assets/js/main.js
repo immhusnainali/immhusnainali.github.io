@@ -643,6 +643,12 @@ function applyLanguage(language) {
   if (swiperTestimonial && typeof swiperTestimonial.update === "function") {
     swiperTestimonial.update();
   }
+
+  window.dispatchEvent(
+    new CustomEvent("language-changed", {
+      detail: { language },
+    })
+  );
 }
 
 const storedLanguage = localStorage.getItem(languageStorageKey);
@@ -658,6 +664,275 @@ if (languageSelect) {
 }
 
 applyLanguage(initialLanguage);
+
+/*=============== REVIEWS ===============*/
+const reviewStorageKey = "portfolio-reviews-v1";
+const reviewsFilePath = "reviews.txt";
+
+const reviewForm = document.getElementById("review-form");
+const reviewNameInput = document.getElementById("review-name");
+const reviewRatingInput = document.getElementById("review-rating");
+const reviewMessageInput = document.getElementById("review-message");
+const reviewStatus = document.getElementById("review-status");
+const openReviewModalBtn = document.getElementById("open-review-modal");
+const closeReviewModalBtn = document.getElementById("close-review-modal");
+const reviewModal = document.getElementById("review-modal");
+
+const ratingStarsEl = document.getElementById("home-rating-stars");
+const ratingValueEl = document.getElementById("home-rating-value");
+const ratingCountEl = document.getElementById("home-rating-count");
+const ratingLabelEl = document.getElementById("home-rating-label");
+
+const reviewTextByLang = {
+  en: {
+    reviewsLabel: "reviews",
+    emptyStatus: "Published reviews are loaded from reviews.txt.",
+    savedStatus: "Review submitted successfully on this device.",
+    invalidRating: "Please select a valid rating.",
+  },
+  ur: {
+    reviewsLabel: "reviews",
+    emptyStatus: "Published reviews reviews.txt se load hoti hain.",
+    savedStatus: "Review is device par submit ho gaya.",
+    invalidRating: "Valid rating select karein.",
+  },
+  es: {
+    reviewsLabel: "resenas",
+    emptyStatus: "Las resenas publicadas se cargan desde reviews.txt.",
+    savedStatus: "Resena enviada en este dispositivo.",
+    invalidRating: "Selecciona una calificacion valida.",
+  },
+  fr: {
+    reviewsLabel: "avis",
+    emptyStatus: "Les avis publies sont charges depuis reviews.txt.",
+    savedStatus: "Avis envoye sur cet appareil.",
+    invalidRating: "Veuillez selectionner une note valide.",
+  },
+  ar: {
+    reviewsLabel: "reviews",
+    emptyStatus: "Published reviews reviews.txt se load hoti hain.",
+    savedStatus: "Review is device par submit ho gaya.",
+    invalidRating: "Valid rating select karein.",
+  },
+};
+
+let activeReviewLanguage = initialLanguage;
+
+function getReviewTexts() {
+  return reviewTextByLang[activeReviewLanguage] || reviewTextByLang.en;
+}
+
+function readStoredReviews() {
+  try {
+    const raw = localStorage.getItem(reviewStorageKey);
+    if (!raw) return [];
+
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed.filter((item) => {
+      if (!item || typeof item !== "object") return false;
+      const rating = Number(item.rating);
+      return Number.isFinite(rating) && rating >= 1 && rating <= 5;
+    });
+  } catch (error) {
+    return [];
+  }
+}
+
+function writeStoredReviews(reviews) {
+  localStorage.setItem(reviewStorageKey, JSON.stringify(reviews));
+}
+
+function getReviewKey(review) {
+  const safeName = String(review.name || "").trim().toLowerCase();
+  const safeDate = String(review.date || "").trim().toLowerCase();
+  const safeMessage = String(review.message || "").trim().toLowerCase();
+  const safeRating = String(review.rating || "");
+  return [safeDate, safeName, safeRating, safeMessage].join("|");
+}
+
+function mergeReviewLists(primary, secondary) {
+  const merged = [];
+  const seen = new Set();
+
+  [...primary, ...secondary].forEach((review) => {
+    if (!review || typeof review !== "object") return;
+    const rating = Number(review.rating);
+    if (!Number.isFinite(rating) || rating < 1 || rating > 5) return;
+
+    const key = getReviewKey(review);
+    if (seen.has(key)) return;
+    seen.add(key);
+    merged.push(review);
+  });
+
+  return merged;
+}
+
+function parseReviewsFromText(text) {
+  const lines = String(text || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  return lines
+    .map((line) => {
+      const normalized = line.replace(/^\d+\.\s*/, "");
+      const parts = normalized.split("|").map((part) => part.trim());
+      if (parts.length < 3) return null;
+
+      const date = parts[0] || "";
+      const name = parts[1] || "Anonymous";
+      const ratingMatch = parts[2].match(/rating:\s*([1-5])\s*\/\s*5/i);
+      if (!ratingMatch) return null;
+
+      const message = parts.slice(3).join(" | ");
+
+      return {
+        date,
+        name,
+        rating: Number(ratingMatch[1]),
+        message,
+        createdAt: "",
+      };
+    })
+    .filter(Boolean);
+}
+
+async function loadPublishedReviews() {
+  try {
+    const response = await fetch(reviewsFilePath, { cache: "no-store" });
+    if (!response.ok) return;
+
+    const text = await response.text();
+    const publishedReviews = parseReviewsFromText(text);
+    if (!publishedReviews.length) return;
+
+    const storedReviews = readStoredReviews();
+    const mergedReviews = mergeReviewLists(publishedReviews, storedReviews);
+    writeStoredReviews(mergedReviews);
+    updateReviewSummary();
+  } catch (error) {
+    // Keep local review behavior if file cannot be fetched.
+  }
+}
+
+function updateReviewSummary() {
+  if (!ratingStarsEl || !ratingValueEl || !ratingCountEl || !ratingLabelEl) return;
+
+  const reviews = readStoredReviews();
+  const count = reviews.length;
+  const average =
+    count > 0
+      ? reviews.reduce((sum, item) => sum + Number(item.rating || 0), 0) / count
+      : 0;
+
+  const rounded = Math.round(average);
+  const filledStar = String.fromCharCode(9733);
+  const emptyStar = String.fromCharCode(9734);
+  ratingStarsEl.textContent =
+    filledStar.repeat(rounded) + emptyStar.repeat(5 - rounded);
+  ratingValueEl.textContent = average.toFixed(1);
+  ratingCountEl.textContent = String(count);
+  ratingLabelEl.textContent = getReviewTexts().reviewsLabel;
+}
+
+function setReviewStatus(message) {
+  if (reviewStatus) {
+    reviewStatus.textContent = message;
+  }
+}
+
+function updateReviewLanguage(language) {
+  activeReviewLanguage = reviewTextByLang[language] ? language : "en";
+  setReviewStatus(getReviewTexts().emptyStatus);
+  updateReviewSummary();
+}
+
+function openReviewModal() {
+  if (!reviewModal) return;
+  reviewModal.classList.add("active-review-modal");
+  reviewModal.setAttribute("aria-hidden", "false");
+}
+
+function closeReviewModal() {
+  if (!reviewModal) return;
+  reviewModal.classList.remove("active-review-modal");
+  reviewModal.setAttribute("aria-hidden", "true");
+}
+
+if (reviewForm) {
+  reviewForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const rating = Number(reviewRatingInput ? reviewRatingInput.value : 0);
+    if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
+      setReviewStatus(getReviewTexts().invalidRating);
+      return;
+    }
+
+    const reviewerName =
+      (reviewNameInput && reviewNameInput.value.trim()) || "Anonymous";
+    const reviewerMessage = reviewMessageInput
+      ? reviewMessageInput.value.trim().slice(0, 240)
+      : "";
+
+    const reviews = readStoredReviews();
+    reviews.unshift({
+      name: reviewerName,
+      rating,
+      message: reviewerMessage,
+      date: new Date().toLocaleDateString(),
+      createdAt: new Date().toISOString(),
+    });
+
+    writeStoredReviews(reviews);
+    updateReviewSummary();
+    setReviewStatus(getReviewTexts().savedStatus);
+
+    reviewForm.reset();
+    if (reviewRatingInput) {
+      reviewRatingInput.value = "5";
+    }
+
+    closeReviewModal();
+  });
+}
+
+if (openReviewModalBtn) {
+  openReviewModalBtn.addEventListener("click", () => {
+    setReviewStatus(getReviewTexts().emptyStatus);
+    openReviewModal();
+  });
+}
+
+if (closeReviewModalBtn) {
+  closeReviewModalBtn.addEventListener("click", closeReviewModal);
+}
+
+if (reviewModal) {
+  reviewModal.addEventListener("click", (event) => {
+    if (event.target === reviewModal) {
+      closeReviewModal();
+    }
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeReviewModal();
+  }
+});
+
+window.addEventListener("language-changed", (event) => {
+  const language =
+    event && event.detail && event.detail.language ? event.detail.language : "en";
+  updateReviewLanguage(language);
+});
+
+updateReviewLanguage(initialLanguage);
+loadPublishedReviews();
 
 /*=============== SCROLL REVEAL ANIMATION ===============*/
 const sr = ScrollReveal({
