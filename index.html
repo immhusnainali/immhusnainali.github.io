@@ -114,7 +114,7 @@
                 </div>
 
                 <div class="home__handle">
-                    <img src="assets/img/profile.png" alt="" class="home__img">
+                    <img src="assets/img/profile.png" alt="" class="home__img" decoding="async">
                 </div>
 
                 <div class="home__social">
@@ -142,7 +142,7 @@
             <h2 class="section__title">About Me</h2>
 
             <div class="about__container container grid">
-                <img src="assets/img/about.png" alt="" class="about__img">
+                <img src="assets/img/about.png" alt="" class="about__img" loading="lazy" decoding="async">
 
                 <div class="about__data">
                     <div class="about__info">
@@ -505,7 +505,7 @@
 
             <div class="work__container container grid">
                 <div class="work__card mix web">
-                    <img src="assets/img/work1.jpg" alt="" class="work__img">
+                    <img src="assets/img/work1.jpg" alt="" class="work__img" loading="lazy" decoding="async">
 
                     <h3 class="work__title">Web Application</h3>
 
@@ -515,7 +515,7 @@
                 </div>
 
                 <div class="work__card mix desktop">
-                    <img src="assets/img/work2.jpg" alt="" class="work__img">
+                    <img src="assets/img/work2.jpg" alt="" class="work__img" loading="lazy" decoding="async">
 
                     <h3 class="work__title">Desktop Application</h3>
 
@@ -525,7 +525,7 @@
                 </div>
 
                 <div class="work__card mix design">
-                    <img src="assets/img/work4.jpg" alt="" class="work__img">
+                    <img src="assets/img/work4.jpg" alt="" class="work__img" loading="lazy" decoding="async">
 
                     <h3 class="work__title">Web Design</h3>
 
@@ -535,7 +535,7 @@
                 </div>
 
                 <div class="work__card mix design">
-                    <img src="assets/img/work5.jpg" alt="" class="work__img">
+                    <img src="assets/img/work5.jpg" alt="" class="work__img" loading="lazy" decoding="async">
 
                     <h3 class="work__title">App Design</h3>
 
@@ -555,7 +555,7 @@
             <div class="testimonial__container container swiper">
                 <div class="swiper-wrapper">
                     <div class="testimonial__card swiper-slide">
-                        <img src="assets/img/testimonial2.png" alt="" class="testimonial__img">
+                        <img src="assets/img/testimonial2.png" alt="" class="testimonial__img" loading="lazy" decoding="async">
 
                         <h3 class="testimonial__name">Noor Fatima</h3>
                         <p class="testimonial__description">
@@ -563,7 +563,7 @@
                         </p>
                     </div>
                     <div class="testimonial__card swiper-slide">
-                        <img src="assets/img/testimonial3.png" alt="" class="testimonial__img">
+                        <img src="assets/img/testimonial3.png" alt="" class="testimonial__img" loading="lazy" decoding="async">
 
                         <h3 class="testimonial__name">Nouman Aziz</h3>
                         <p class="testimonial__description">
@@ -571,7 +571,7 @@
                         </p>
                     </div>
                     <div class="testimonial__card swiper-slide">
-                        <img src="assets/img/testimonial1.png" alt="" class="testimonial__img">
+                        <img src="assets/img/testimonial1.png" alt="" class="testimonial__img" loading="lazy" decoding="async">
 
                         <h3 class="testimonial__name">Muhammad Umar Farooq</h3>
                         <p class="testimonial__description">
@@ -628,7 +628,7 @@
 
         <!--=============== CONTACT ===============-->
         <section class="contact section" id="contact">
-            <sapn class="section__subtitle">Get in touch</sapn>
+            <span class="section__subtitle">Get in touch</span>
             <h3 class="section__title">Contact Me</h3>
 
             <div class="contact__container container grid">
@@ -753,6 +753,28 @@
             </span>
         </div>
     </footer>
+
+    <button type="button" class="share-float" id="open-share-modal" aria-label="Share portfolio">
+        <i class='bx bx-qr'></i>
+    </button>
+
+    <div class="share-modal" id="share-modal" aria-hidden="true">
+        <div class="share-modal__content" role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
+            <button class="share-modal__close" type="button" id="close-share-modal" aria-label="Close share popup">
+                <i class='bx bx-x'></i>
+            </button>
+
+            <h3 class="share-modal__title" id="share-modal-title">Share Portfolio</h3>
+            <p class="share-modal__description" id="share-modal-description">
+                Scan this QR code on another device.
+            </p>
+
+            <div class="share-modal__qr" id="share-qr-code"></div>
+
+            <span class="share-modal__link-label" id="share-modal-link-label">Direct link</span>
+            <a class="share-modal__link" id="share-portfolio-link" href="#" target="_blank" rel="noopener noreferrer"></a>
+        </div>
+    </div>
 
     <!--=============== SCROLLREVEAL ===============-->
 

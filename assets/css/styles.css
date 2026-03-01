@@ -111,17 +111,6 @@ img {
   height: auto;
 }
 
-/*=============== THEME ===============*/
-.change__theme {
-  font-size: 1.25rem;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.change__theme:hover {
-  color: var(--first-color);
-}
-
 /*========== Variables light theme ==========*/
 body.light-theme {
   --title-color: hsl(var(--second-hue), 15%, 15%);
@@ -177,7 +166,8 @@ body.light-theme {
 .light-theme .testimonial__card,
 .light-theme .contact__card,
 .light-theme .contact__form-div,
-.light-theme .review-modal__content {
+.light-theme .review-modal__content,
+.light-theme .share-modal__content {
   box-shadow: 0 2px 16px hsla(var(--second-hue), 48%, 8%, 0.1);
 }
 
@@ -238,12 +228,14 @@ body.light-theme {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-width: 0;
 }
 
 .nav__logo {
   color: var(--first-color);
   font-weight: var(--font-medium);
   transition: 0.4s;
+  min-width: 0;
 }
 
 .nav__logo:hover {
@@ -253,22 +245,56 @@ body.light-theme {
 .nav__actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   column-gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .language-select {
-  width: 4.25rem;
+  width: 4.15rem;
+  height: 2rem;
   background-color: var(--container-color);
   color: var(--title-color);
-  border: 1px solid var(--first-color-alt);
-  border-radius: 0.5rem;
-  padding: 0.2rem 0.35rem;
+  border: 1px solid hsla(var(--first-hue), var(--sat), var(--lig), 0.35);
+  border-radius: 1rem;
+  padding: 0 1.45rem 0 0.65rem;
   font-size: var(--tiny-font-size);
   outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--first-color) 50%),
+    linear-gradient(135deg, var(--first-color) 50%, transparent 50%);
+  background-position: calc(100% - 14px) calc(50% - 2px),
+    calc(100% - 9px) calc(50% - 2px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .language-select:focus {
   border-color: var(--first-color);
+}
+
+.change-theme-button {
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.25rem;
+  color: var(--title-color);
+  background-color: var(--container-color);
+  border: 1px solid hsla(var(--first-hue), var(--sat), var(--lig), 0.35);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s;
+  flex-shrink: 0;
+}
+
+.change-theme-button:hover {
+  color: var(--first-color);
 }
 
 .nav__menu {
@@ -395,7 +421,11 @@ body.light-theme {
 }
 
 .review-open-button {
-  margin-top: 1rem;
+  margin-top: 0.85rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 0.7rem;
+  font-size: var(--small-font-size);
+  line-height: 1.1;
 }
 
 .home__social,
@@ -885,6 +915,113 @@ html[dir="rtl"] .review-modal__close {
   left: 0.9rem;
 }
 
+/*=============== SHARE ===============*/
+.share-float {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 5.75rem;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background-color: var(--first-color);
+  color: var(--body-color);
+  box-shadow: 0 8px 24px hsla(var(--first-hue), var(--sat), var(--lig), 0.35);
+  z-index: var(--z-fixed);
+  transition: 0.4s;
+}
+
+.share-float:hover {
+  background-color: var(--first-color-alt);
+}
+
+.share-float i {
+  font-size: 1.35rem;
+}
+
+.share-modal {
+  position: fixed;
+  inset: 0;
+  background-color: hsl(var(--second-hue), 28%, 16%, 0.7);
+  padding: 2rem 1rem;
+  display: grid;
+  place-items: center;
+  transition: 0.4s;
+  z-index: var(--z-modal);
+  visibility: hidden;
+  opacity: 0;
+}
+
+.share-modal.active-share-modal {
+  visibility: visible;
+  opacity: 1;
+}
+
+.share-modal__content {
+  width: min(100%, 420px);
+  background-color: var(--body-color);
+  border-radius: 1.25rem;
+  padding: 2.25rem 1.5rem 1.5rem;
+  position: relative;
+  text-align: center;
+}
+
+.share-modal__close {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  font-size: 1.5rem;
+  color: var(--first-color);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.share-modal__title {
+  color: var(--first-color);
+}
+
+.share-modal__description {
+  margin: 0.75rem 0 1.25rem;
+  font-size: var(--small-font-size);
+}
+
+.share-modal__qr {
+  width: fit-content;
+  min-width: 212px;
+  min-height: 212px;
+  margin: 0 auto 1rem;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 1rem;
+}
+
+.share-modal__qr img,
+.share-modal__qr canvas {
+  display: block;
+}
+
+.share-modal__link-label {
+  display: block;
+  color: var(--title-color);
+  font-size: var(--small-font-size);
+  margin-bottom: 0.5rem;
+}
+
+.share-modal__link {
+  display: inline-block;
+  max-width: 100%;
+  word-break: break-all;
+  color: var(--first-color);
+  font-size: var(--small-font-size);
+}
+
+html[dir="rtl"] .share-modal__close {
+  right: auto;
+  left: 0.9rem;
+}
+
 /*=============== CONTACT ===============*/
 .contact__container {
   row-gap: 3rem;
@@ -1062,6 +1199,36 @@ html[dir="rtl"] .review-modal__close {
 /*=============== BREAKPOINTS ===============*/
 /* For small devices */
 @media screen and (max-width: 320px) {
+  .nav {
+    gap: 0.4rem;
+  }
+
+  .nav__logo {
+    max-width: calc(100% - 7.5rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nav__actions {
+    column-gap: 0.35rem;
+  }
+
+  .language-select {
+    width: 3.55rem;
+    height: 1.85rem;
+    padding-left: 0.5rem;
+    padding-right: 1.2rem;
+    font-size: var(--smaller-font-size);
+    border-radius: 0.85rem;
+  }
+
+  .change-theme-button {
+    width: 1.85rem;
+    height: 1.85rem;
+    font-size: 1.05rem;
+  }
+
   .nav__menu {
     padding: 1rem 1.5rem;
   }
@@ -1121,6 +1288,38 @@ html[dir="rtl"] .review-modal__close {
 }
 
 /* For medium devices */
+@media screen and (max-width: 629px) {
+  .nav {
+    gap: 0.5rem;
+  }
+
+  .nav__logo {
+    font-size: var(--smaller-font-size);
+    max-width: calc(100% - 7.8rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nav__actions {
+    column-gap: 0.4rem;
+  }
+
+  .language-select {
+    width: 3.7rem;
+    height: 1.9rem;
+    padding-left: 0.55rem;
+    padding-right: 1.25rem;
+    font-size: var(--smaller-font-size);
+  }
+
+  .change-theme-button {
+    width: 1.9rem;
+    height: 1.9rem;
+    font-size: 1.1rem;
+  }
+}
+
 @media screen and (min-width: 630px) {
   .nav__menu {
     width: 328px;

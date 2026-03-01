@@ -229,6 +229,9 @@ const languageTargets = [
   { key: "footerSkills", selector: ".footer__item:nth-child(3) .footer__link" },
   { key: "footerWork", selector: ".footer__item:nth-child(4) .footer__link" },
   { key: "footerContact", selector: ".footer__item:nth-child(5) .footer__link" },
+  { key: "shareModalTitle", selector: "#share-modal-title" },
+  { key: "shareModalDescription", selector: "#share-modal-description" },
+  { key: "shareModalLinkLabel", selector: "#share-modal-link-label" },
 ];
 
 const skillLevelTranslations = {
@@ -310,6 +313,9 @@ const translations = {
     footerSkills: "Skills",
     footerWork: "Work",
     footerContact: "Contact",
+    shareModalTitle: "Share Portfolio",
+    shareModalDescription: "Scan this QR code on another device.",
+    shareModalLinkLabel: "Direct link",
   },
   ur: {
     documentTitle: "Muhammad Husnain Ali | Portfolio",
@@ -381,6 +387,9 @@ const translations = {
     footerSkills: "Skills",
     footerWork: "Work",
     footerContact: "Contact",
+    shareModalTitle: "Portfolio Share Karein",
+    shareModalDescription: "Is QR code ko dusri device par scan karein.",
+    shareModalLinkLabel: "Direct link",
   },
   es: {
     documentTitle: "Muhammad Husnain Ali | Portafolio",
@@ -452,6 +461,9 @@ const translations = {
     footerSkills: "Habilidades",
     footerWork: "Trabajo",
     footerContact: "Contacto",
+    shareModalTitle: "Compartir Portafolio",
+    shareModalDescription: "Escanea este codigo QR en otro dispositivo.",
+    shareModalLinkLabel: "Enlace directo",
   },
   fr: {
     documentTitle: "Muhammad Husnain Ali | Portfolio",
@@ -523,6 +535,9 @@ const translations = {
     footerSkills: "Competences",
     footerWork: "Travail",
     footerContact: "Contact",
+    shareModalTitle: "Partager Portfolio",
+    shareModalDescription: "Scannez ce code QR sur un autre appareil.",
+    shareModalLinkLabel: "Lien direct",
   },
   ar: {
     documentTitle: "محمد حسنين علي | ملف الاعمال",
@@ -677,6 +692,13 @@ const reviewStatus = document.getElementById("review-status");
 const openReviewModalBtn = document.getElementById("open-review-modal");
 const closeReviewModalBtn = document.getElementById("close-review-modal");
 const reviewModal = document.getElementById("review-modal");
+const openShareModalBtn = document.getElementById("open-share-modal");
+const closeShareModalBtn = document.getElementById("close-share-modal");
+const shareModal = document.getElementById("share-modal");
+const shareQrCode = document.getElementById("share-qr-code");
+const sharePortfolioLink = document.getElementById("share-portfolio-link");
+const qrCodeScriptUrl =
+  "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
 
 const ratingStarsEl = document.getElementById("home-rating-stars");
 const ratingValueEl = document.getElementById("home-rating-value");
@@ -709,14 +731,18 @@ const reviewTextByLang = {
     invalidRating: "Veuillez selectionner une note valide.",
   },
   ar: {
-    reviewsLabel: "reviews",
-    emptyStatus: "Published reviews reviews.txt se load hoti hain.",
-    savedStatus: "Review is device par submit ho gaya.",
-    invalidRating: "Valid rating select karein.",
+    reviewsLabel: "\u0645\u0631\u0627\u062c\u0639\u0627\u062a",
+    emptyStatus:
+      "\u064a\u062a\u0645 \u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u0645\u0631\u0627\u062c\u0639\u0627\u062a \u0627\u0644\u0645\u0646\u0634\u0648\u0631\u0629 \u0645\u0646 reviews.txt.",
+    savedStatus:
+      "\u062a\u0645 \u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0645\u0631\u0627\u062c\u0639\u0629 \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u062c\u0647\u0627\u0632.",
+    invalidRating:
+      "\u064a\u0631\u062c\u0649 \u0627\u062e\u062a\u064a\u0627\u0631 \u062a\u0642\u064a\u064a\u0645 \u0635\u0627\u0644\u062d.",
   },
 };
 
 let activeReviewLanguage = initialLanguage;
+let qrCodeLoaderPromise = null;
 
 function getReviewTexts() {
   return reviewTextByLang[activeReviewLanguage] || reviewTextByLang.en;
@@ -802,7 +828,7 @@ function parseReviewsFromText(text) {
 
 async function loadPublishedReviews() {
   try {
-    const response = await fetch(reviewsFilePath, { cache: "no-store" });
+    const response = await fetch(reviewsFilePath);
     if (!response.ok) return;
 
     const text = await response.text();
@@ -862,6 +888,98 @@ function closeReviewModal() {
   reviewModal.setAttribute("aria-hidden", "true");
 }
 
+function getShareUrl() {
+  const shareUrl = new URL(window.location.href);
+  shareUrl.hash = "";
+  shareUrl.search = "";
+  return shareUrl.toString();
+}
+
+function loadQrCodeScript() {
+  if (typeof QRCode !== "undefined") {
+    return Promise.resolve();
+  }
+
+  if (qrCodeLoaderPromise) {
+    return qrCodeLoaderPromise;
+  }
+
+  qrCodeLoaderPromise = new Promise((resolve, reject) => {
+    const existingScript = document.querySelector(
+      `script[src="${qrCodeScriptUrl}"]`
+    );
+
+    if (existingScript) {
+      existingScript.addEventListener("load", () => resolve(), { once: true });
+      existingScript.addEventListener(
+        "error",
+        () => reject(new Error("Failed to load QR script.")),
+        { once: true }
+      );
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = qrCodeScriptUrl;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Failed to load QR script."));
+    document.body.appendChild(script);
+  }).catch((error) => {
+    qrCodeLoaderPromise = null;
+    throw error;
+  });
+
+  return qrCodeLoaderPromise;
+}
+
+function renderShareQrCode() {
+  if (!shareQrCode) return;
+
+  const shareUrl = getShareUrl();
+  shareQrCode.innerHTML = "";
+
+  if (sharePortfolioLink) {
+    sharePortfolioLink.href = shareUrl;
+    sharePortfolioLink.textContent = shareUrl;
+  }
+
+  if (typeof QRCode === "undefined") {
+    shareQrCode.textContent = shareUrl;
+    return;
+  }
+
+  new QRCode(shareQrCode, {
+    text: shareUrl,
+    width: 180,
+    height: 180,
+    colorDark: "#111827",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H,
+  });
+}
+
+async function openShareModal() {
+  if (!shareModal) return;
+
+  renderShareQrCode();
+  shareModal.classList.add("active-share-modal");
+  shareModal.setAttribute("aria-hidden", "false");
+
+  try {
+    await loadQrCodeScript();
+    renderShareQrCode();
+  } catch (error) {
+    // Keep the direct link visible if the QR library cannot be loaded.
+  }
+}
+
+function closeShareModal() {
+  if (!shareModal) return;
+  shareModal.classList.remove("active-share-modal");
+  shareModal.setAttribute("aria-hidden", "true");
+}
+
 if (reviewForm) {
   reviewForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -919,9 +1037,26 @@ if (reviewModal) {
   });
 }
 
+if (openShareModalBtn) {
+  openShareModalBtn.addEventListener("click", openShareModal);
+}
+
+if (closeShareModalBtn) {
+  closeShareModalBtn.addEventListener("click", closeShareModal);
+}
+
+if (shareModal) {
+  shareModal.addEventListener("click", (event) => {
+    if (event.target === shareModal) {
+      closeShareModal();
+    }
+  });
+}
+
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeReviewModal();
+    closeShareModal();
   }
 });
 
@@ -981,7 +1116,7 @@ sr.reveal(`.skills__content`, {
   distance: "30px",
 });
 
-sr.reveal(`.services__title, services__button`, {
+sr.reveal(`.services__title, .services__button`, {
   delay: 100,
   scale: 0.9,
   origin: "top",
@@ -1016,7 +1151,7 @@ sr.reveal(`.contact__form, .contact__title-form`, {
   distance: "30px",
 });
 
-sr.reveal(`.footer, footer__container`, {
+sr.reveal(`.footer, .footer__container`, {
   delay: 100,
   scale: 0.9,
   origin: "bottom",
