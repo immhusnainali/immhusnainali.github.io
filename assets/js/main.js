@@ -1069,6 +1069,299 @@ window.addEventListener("language-changed", (event) => {
 updateReviewLanguage(initialLanguage);
 loadPublishedReviews();
 
+/*=============== INTERACTION FX ===============*/
+const codeEffectSymbols = ["</>", "{}", "[]", "()", "=>", "const"];
+
+function spawnFloatingCodeParticles(x, y, count = 4) {
+  for (let index = 0; index < count; index += 1) {
+    const particle = document.createElement("span");
+    particle.className = "tap-code-particle";
+    particle.textContent =
+      codeEffectSymbols[Math.floor(Math.random() * codeEffectSymbols.length)];
+    particle.style.left = `${x}px`;
+    particle.style.top = `${y}px`;
+    particle.style.setProperty(
+      "--move-x",
+      `${Math.round((Math.random() - 0.5) * 120)}px`
+    );
+    particle.style.setProperty(
+      "--move-y",
+      `${Math.round(-46 - Math.random() * 56)}px`
+    );
+
+    document.body.appendChild(particle);
+    particle.addEventListener("animationend", () => particle.remove(), {
+      once: true,
+    });
+  }
+}
+
+function initTapInteractions() {
+  const rippleSelector = [
+    ".button",
+    ".services__card",
+    ".work__card",
+    ".about__box",
+    ".contact__card",
+    ".home__social-link",
+    ".footer__social-link",
+    ".nav__link",
+    ".work__item",
+    ".share-float",
+  ].join(", ");
+
+  document.querySelectorAll(rippleSelector).forEach((element) => {
+    element.classList.add("ripple-surface");
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    const target = event.target.closest(rippleSelector);
+    if (!target) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
+    const rect = target.getBoundingClientRect();
+    const ripple = document.createElement("span");
+    const size = Math.max(rect.width, rect.height);
+
+    ripple.className = "tap-ripple";
+    ripple.style.left = `${event.clientX - rect.left}px`;
+    ripple.style.top = `${event.clientY - rect.top}px`;
+    ripple.style.setProperty(
+      "--ripple-scale",
+      `${Math.max(6, Math.ceil(size / 12))}`
+    );
+
+    target.appendChild(ripple);
+    ripple.addEventListener("animationend", () => ripple.remove(), {
+      once: true,
+    });
+
+    if (event.pointerType && event.pointerType !== "mouse") {
+      spawnFloatingCodeParticles(event.clientX, event.clientY, 3);
+    }
+  });
+}
+
+function initHomeTerminal() {
+  const terminalText = document.getElementById("home-terminal-text");
+  const homeRole = document.querySelector(".home__education");
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  if (!terminalText || !homeRole) {
+    return;
+  }
+
+  let typingRunId = 0;
+
+  function renderTerminal() {
+    const roleText = homeRole.textContent.trim() || "Software Engineer";
+    const terminalLine = `const role = "${roleText}";`;
+
+    typingRunId += 1;
+    const currentRun = typingRunId;
+    terminalText.textContent = "";
+
+    if (prefersReducedMotion) {
+      terminalText.textContent = terminalLine;
+      return;
+    }
+
+    let index = 1;
+
+    function typeNext() {
+      if (currentRun !== typingRunId) return;
+
+      terminalText.textContent = terminalLine.slice(0, index);
+      if (index < terminalLine.length) {
+        index += 1;
+        window.setTimeout(typeNext, 34);
+      }
+    }
+
+    typeNext();
+  }
+
+  renderTerminal();
+  window.addEventListener("language-changed", renderTerminal);
+}
+
+function initSocialMagnetism() {
+  if (!window.matchMedia("(pointer: fine)").matches) {
+    return;
+  }
+
+  document
+    .querySelectorAll(".home__social-link, .footer__social-link")
+    .forEach((link) => {
+      link.addEventListener("pointermove", (event) => {
+        const rect = link.getBoundingClientRect();
+        const moveX = ((event.clientX - rect.left) / rect.width - 0.5) * 12;
+        const moveY = ((event.clientY - rect.top) / rect.height - 0.5) * 12;
+
+        link.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        link.classList.add("is-magnetic");
+      });
+
+      link.addEventListener("pointerleave", () => {
+        link.style.transform = "";
+        link.classList.remove("is-magnetic");
+      });
+    });
+}
+
+function initScrollGlow() {
+  const targets = document.querySelectorAll(
+    ".about__box, .skills__content, .services__card, .work__card, .testimonial__card, .contact__card"
+  );
+
+  if (!targets.length) {
+    return;
+  }
+
+  targets.forEach((target) => target.classList.add("scroll-glow-item"));
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-glow-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.22,
+      rootMargin: "0px 0px -8% 0px",
+    }
+  );
+
+  targets.forEach((target) => observer.observe(target));
+}
+
+initTapInteractions();
+initHomeTerminal();
+initSocialMagnetism();
+initScrollGlow();
+
+/*=============== CODE CURSOR ===============*/
+
+function initCodeCursor() {
+  const supportsFinePointer = window.matchMedia("(pointer: fine)").matches;
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  if (!supportsFinePointer || prefersReducedMotion) {
+    return;
+  }
+
+  const cursor = document.createElement("div");
+  cursor.className = "code-cursor";
+  cursor.innerHTML = `
+    <span class="code-cursor__ring"></span>
+    <span class="code-cursor__dot"></span>
+    <span class="code-cursor__label">&lt;/&gt;</span>
+  `;
+
+  document.body.appendChild(cursor);
+  document.body.classList.add("has-code-cursor");
+
+  const dot = cursor.querySelector(".code-cursor__dot");
+  const ring = cursor.querySelector(".code-cursor__ring");
+  const label = cursor.querySelector(".code-cursor__label");
+  const interactiveSelector =
+    "a, button, .services__button, .work__item, .nav__link, .home__social-link, .footer__link";
+  const nativeCursorSelector = "input, textarea, select";
+
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  let ringX = mouseX;
+  let ringY = mouseY;
+
+  function positionElement(element, x, y) {
+    if (!element) return;
+    element.style.left = `${x}px`;
+    element.style.top = `${y}px`;
+  }
+
+  function renderCursor() {
+    ringX += (mouseX - ringX) * 0.18;
+    ringY += (mouseY - ringY) * 0.18;
+
+    positionElement(dot, mouseX, mouseY);
+    positionElement(ring, ringX, ringY);
+    positionElement(label, ringX + 18, ringY - 16);
+
+    window.requestAnimationFrame(renderCursor);
+  }
+
+  function spawnCursorParticles(x, y) {
+    for (let index = 0; index < 4; index += 1) {
+      const particle = document.createElement("span");
+      particle.className = "code-cursor__particle";
+      particle.textContent =
+        codeEffectSymbols[
+          Math.floor(Math.random() * codeEffectSymbols.length)
+        ];
+      particle.style.left = `${x}px`;
+      particle.style.top = `${y}px`;
+      particle.style.setProperty(
+        "--move-x",
+        `${Math.round((Math.random() - 0.5) * 110)}px`
+      );
+      particle.style.setProperty(
+        "--move-y",
+        `${Math.round(-42 - Math.random() * 54)}px`
+      );
+
+      cursor.appendChild(particle);
+      particle.addEventListener("animationend", () => particle.remove(), {
+        once: true,
+      });
+    }
+  }
+
+  document.addEventListener("mousemove", (event) => {
+    const usesNativeCursor = event.target.closest(nativeCursorSelector);
+
+    mouseX = event.clientX;
+    mouseY = event.clientY;
+
+    if (usesNativeCursor) {
+      cursor.classList.remove("is-visible", "is-active");
+      return;
+    }
+
+    cursor.classList.add("is-visible");
+    cursor.classList.toggle(
+      "is-active",
+      Boolean(event.target.closest(interactiveSelector))
+    );
+  });
+
+  document.addEventListener("mouseleave", () => {
+    cursor.classList.remove("is-visible", "is-active");
+  });
+
+  window.addEventListener("blur", () => {
+    cursor.classList.remove("is-visible", "is-active");
+  });
+
+  document.addEventListener("mousedown", (event) => {
+    if (event.target.closest(nativeCursorSelector)) {
+      return;
+    }
+
+    spawnCursorParticles(event.clientX, event.clientY);
+  });
+
+  renderCursor();
+}
+
+initCodeCursor();
+
 /*=============== SCROLL REVEAL ANIMATION ===============*/
 const sr = ScrollReveal({
   origin: "top",
