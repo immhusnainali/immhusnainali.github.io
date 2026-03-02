@@ -324,17 +324,21 @@
                     <div class="serv">
                         <h3 class="services__title">Web <br> Development</h3>
 
-                        <span class="services__button">
+                        <button type="button" class="services__button" aria-haspopup="dialog" aria-expanded="false"
+                            aria-controls="services-modal-web">
                             See More <i class='bx bx-right-arrow services__icon'></i>
-                        </span>
+                        </button>
                     </div>
 
 
-                    <div class="services__modal">
-                        <div class="services__modal-content">
-                            <i class='bx bx-x services__modal-close'></i>
+                    <div class="services__modal" id="services-modal-web" aria-hidden="true">
+                        <div class="services__modal-content" role="dialog" aria-modal="true"
+                            aria-labelledby="services-modal-web-title">
+                            <button class="services__modal-close" type="button" aria-label="Close popup">
+                                <i class='bx bx-x'></i>
+                            </button>
 
-                            <h3 class="services__modal-title">Web Development</h3>
+                            <h3 class="services__modal-title" id="services-modal-web-title">Web Development</h3>
 
                             <p class="services__modal-description">
                                 I design and develop modern, responsive websites tailored to meet both customer and market needs, using a creative and hands-on approach.
@@ -383,15 +387,19 @@
                 <div class="services__card">
                     <h3 class="services__title">UI/UX <br> Designing</h3>
 
-                    <span class="services__button">
+                    <button type="button" class="services__button" aria-haspopup="dialog" aria-expanded="false"
+                        aria-controls="services-modal-uiux">
                         See More <i class='bx bx-right-arrow services__icon'></i>
-                    </span>
+                    </button>
 
-                    <div class="services__modal">
-                        <div class="services__modal-content">
-                            <i class='bx bx-x services__modal-close'></i>
+                    <div class="services__modal" id="services-modal-uiux" aria-hidden="true">
+                        <div class="services__modal-content" role="dialog" aria-modal="true"
+                            aria-labelledby="services-modal-uiux-title">
+                            <button class="services__modal-close" type="button" aria-label="Close popup">
+                                <i class='bx bx-x'></i>
+                            </button>
 
-                            <h3 class="services__modal-title">UI/UX Designing</h3>
+                            <h3 class="services__modal-title" id="services-modal-uiux-title">UI/UX Designing</h3>
 
                             <p class="services__modal-description">
                                 I design and develop consumer products with a creative and hands-on approach, ensuring they meet both customer and market needs and trends.
@@ -440,15 +448,20 @@
                 <div class="services__card">
                     <h3 class="services__title">Desktop Application <br> Development</h3>
 
-                    <span class="services__button">
+                    <button type="button" class="services__button" aria-haspopup="dialog" aria-expanded="false"
+                        aria-controls="services-modal-desktop">
                         See More <i class='bx bx-right-arrow services__icon'></i>
-                    </span>
+                    </button>
 
-                    <div class="services__modal">
-                        <div class="services__modal-content">
-                            <i class='bx bx-x services__modal-close'></i>
+                    <div class="services__modal" id="services-modal-desktop" aria-hidden="true">
+                        <div class="services__modal-content" role="dialog" aria-modal="true"
+                            aria-labelledby="services-modal-desktop-title">
+                            <button class="services__modal-close" type="button" aria-label="Close popup">
+                                <i class='bx bx-x'></i>
+                            </button>
 
-                            <h3 class="services__modal-title">Desktop Application</h3>
+                            <h3 class="services__modal-title" id="services-modal-desktop-title">Desktop Application
+                            </h3>
 
                             <p class="services__modal-description">
                                 I design and develop desktop applications with a creative and hands-on approach, ensuring they meet both customer and market needs.

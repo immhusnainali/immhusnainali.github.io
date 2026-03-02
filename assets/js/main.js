@@ -8,27 +8,59 @@ function scrollHeader() {
 window.addEventListener("scroll", scrollHeader);
 
 /*=============== SERVICES MODAL ===============*/
-// Get the modal
-const modalViews = document.querySelectorAll(".services__modal"),
-  modalBtns = document.querySelectorAll(".services__button"),
-  modalClose = document.querySelectorAll(".services__modal-close");
+const serviceCards = document.querySelectorAll(".services__card");
 
-// When the user clicks on the button, open the modal
-let modal = function (modalClick) {
-  modalViews[modalClick].classList.add("active-modal");
-};
+function closeAllServiceModals() {
+  serviceCards.forEach((card) => {
+    const trigger = card.querySelector(".services__button");
+    const modal = card.querySelector(".services__modal");
 
-modalBtns.forEach((mb, i) => {
-  mb.addEventListener("click", () => {
-    modal(i);
+    if (trigger) {
+      trigger.setAttribute("aria-expanded", "false");
+    }
+
+    if (modal) {
+      modal.classList.remove("active-modal");
+      modal.setAttribute("aria-hidden", "true");
+    }
   });
-});
+}
 
-modalClose.forEach((mc) => {
-  mc.addEventListener("click", () => {
-    modalViews.forEach((mv) => {
-      mv.classList.remove("active-modal");
-    });
+function openServiceModal(card) {
+  const trigger = card.querySelector(".services__button");
+  const modal = card.querySelector(".services__modal");
+
+  if (!trigger || !modal) {
+    return;
+  }
+
+  closeAllServiceModals();
+  modal.classList.add("active-modal");
+  modal.setAttribute("aria-hidden", "false");
+  trigger.setAttribute("aria-expanded", "true");
+}
+
+serviceCards.forEach((card) => {
+  const trigger = card.querySelector(".services__button");
+  const modal = card.querySelector(".services__modal");
+  const closeButton = card.querySelector(".services__modal-close");
+
+  if (!trigger || !modal || !closeButton) {
+    return;
+  }
+
+  trigger.addEventListener("click", () => {
+    openServiceModal(card);
+  });
+
+  closeButton.addEventListener("click", () => {
+    closeAllServiceModals();
+  });
+
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      closeAllServiceModals();
+    }
   });
 });
 
@@ -1055,6 +1087,7 @@ if (shareModal) {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
+    closeAllServiceModals();
     closeReviewModal();
     closeShareModal();
   }
@@ -1099,7 +1132,6 @@ function spawnFloatingCodeParticles(x, y, count = 4) {
 function initTapInteractions() {
   const rippleSelector = [
     ".button",
-    ".services__card",
     ".work__card",
     ".about__box",
     ".contact__card",
@@ -1213,7 +1245,7 @@ function initSocialMagnetism() {
 
 function initScrollGlow() {
   const targets = document.querySelectorAll(
-    ".about__box, .skills__content, .services__card, .work__card, .testimonial__card, .contact__card"
+    ".about__box, .skills__content, .work__card, .testimonial__card, .contact__card"
   );
 
   if (!targets.length) {
