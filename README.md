@@ -13,16 +13,30 @@ The live tools process files and text locally in the browser wherever that workf
 - Image Compressor
 - Image Resizer
 - JSON Formatter and Validator
+- Base64 Encode or Decode
+- URL Encode or Decode
+- UUID Generator
 - Password Generator
+- Password Strength Checker
+- Random Token Generator
 - QR Code Generator
+- Portfolio Share
+- Timestamp Converter
+- Random Number Generator
+- Calculator
 - Word Counter
+- Character Counter
+- Text Case Converter
+- Remove Duplicate Lines
+- Text Sorter
+- Line Number Generator
 
 ### Planned scaffold pages
 - PDF: Rotate PDF Pages, Delete PDF Pages, Reorder PDF Pages, Extract Selected PDF Pages, Add Page Numbers to PDF
 - Image: JPG to PNG, PNG to JPG, Image to WebP, Crop Image, Rotate or Flip Image, Add Watermark to Image
-- Developer: Base64 Encode or Decode, URL Encode or Decode, UUID Generator, Regex Tester, HTML Formatter, CSS Minifier
-- Text: Character Counter, Text Case Converter, Remove Duplicate Lines, Text Sorter, Line Number Generator, Text Diff Checker
-- Utility: Password Strength Checker, Hash Generator, Random Token Generator, Markdown to HTML, HTML to Markdown, CSV to JSON, JSON to CSV, Timestamp Converter, Random Number Generator, Unit Converter, Calculator
+- Developer: Regex Tester, HTML Formatter, CSS Minifier
+- Text: Text Diff Checker
+- Utility: Hash Generator, Markdown to HTML, HTML to Markdown, CSV to JSON, JSON to CSV, Unit Converter
 
 ## Tech stack
 - HTML5
@@ -85,6 +99,7 @@ Then open `http://localhost:8000`.
 
 ## Frontend-only limitations
 - Planned tools are intentionally scaffolded only and do not fake unavailable functionality.
+- Portfolio Share is optimized for public links, messages, QR handoff, and honest file support checks. It does not create public download links for uploaded files on static hosting.
 - No server OCR, cloud conversion, or advanced office document conversion is included.
 - PDF preview uses browser-side libraries and may feel slower on very large files.
 - Browser memory limits still apply for large PDFs and large image batches.
@@ -92,6 +107,7 @@ Then open `http://localhost:8000`.
 
 ## Future improvements
 - Promote more planned tools to live browser-only implementations
+- Add hash generation and data conversion utilities with the same local-first approach
 - Add richer image editing flows like crop and watermark overlays
 - Expand tool-specific translations beyond shared UI copy
 - Add optional offline caching for the tools hub assets

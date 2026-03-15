@@ -8,9 +8,9 @@ const ENGLISH_COPY = {
       "A polished collection of frontend-only tools designed for GitHub Pages deployment, fast local processing, and trustworthy browser workflows.",
     searchLabel: "Search tools",
     searchPlaceholder: "Search by tool name, category, or use case",
-    featuredTitle: "Featured tools",
+    featuredTitle: "Live tools",
     featuredText:
-      "These are the strongest v1 browser-only tools in the hub right now.",
+      "These are the browser-only tools currently available and working in the hub.",
     allToolsTitle: "Browse every tool",
     allToolsText:
       "Use category filters and search to jump directly to the workflow you need.",
@@ -151,8 +151,8 @@ const UI_TRANSLATIONS = {
         "Frontend-only tools ka ek polished collection jo GitHub Pages, local processing aur trustworthy browser workflows ke liye banaya gaya hai.",
       searchLabel: "Tools search karein",
       searchPlaceholder: "Tool name, category ya use case se search karein",
-      featuredTitle: "Featured tools",
-      featuredText: "Yeh is hub ke strongest v1 browser-only tools hain.",
+      featuredTitle: "Live tools",
+      featuredText: "Yeh is hub ke woh browser-only tools hain jo abhi live aur working hain.",
       allToolsTitle: "Har tool browse karein",
       allToolsText:
         "Category filters aur search ke zariye seedha apne workflow tak pohanchein.",
@@ -245,7 +245,7 @@ const UI_TRANSLATIONS = {
         "Una coleccion cuidada de herramientas frontend-only para GitHub Pages, procesamiento local y flujos de trabajo confiables.",
       searchLabel: "Buscar herramientas",
       searchPlaceholder: "Busca por nombre, categoria o caso de uso",
-      featuredTitle: "Herramientas destacadas",
+      featuredTitle: "Herramientas activas",
       allToolsTitle: "Explorar todas las herramientas",
       trustTitle: "Se ejecuta localmente en tu navegador",
     },
@@ -313,7 +313,7 @@ const UI_TRANSLATIONS = {
         "Une collection soignee d'outils frontend-only pour GitHub Pages, le traitement local et des flux fiables.",
       searchLabel: "Rechercher des outils",
       searchPlaceholder: "Rechercher par nom, categorie ou usage",
-      featuredTitle: "Outils mis en avant",
+      featuredTitle: "Outils actifs",
       allToolsTitle: "Parcourir tous les outils",
       trustTitle: "Fonctionne localement dans votre navigateur",
     },
@@ -383,7 +383,7 @@ const UI_TRANSLATIONS = {
       searchPlaceholder:
         "\u0627\u0628\u062d\u062b \u0628\u0627\u0633\u0645 \u0627\u0644\u0627\u062f\u0627\u0629 \u0627\u0648 \u0627\u0644\u0641\u0626\u0629 \u0627\u0648 \u062d\u0627\u0644\u0629 \u0627\u0644\u0627\u0633\u062a\u062e\u062f\u0627\u0645",
       featuredTitle:
-        "\u0627\u0644\u0627\u062f\u0648\u0627\u062a \u0627\u0644\u0645\u0645\u064a\u0632\u0629",
+        "\u0627\u0644\u0627\u062f\u0648\u0627\u062a \u0627\u0644\u062c\u0627\u0647\u0632\u0629",
       allToolsTitle:
         "\u062a\u0635\u0641\u062d \u062c\u0645\u064a\u0639 \u0627\u0644\u0627\u062f\u0648\u0627\u062a",
       trustTitle:

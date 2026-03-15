@@ -127,6 +127,8 @@ function Test-RequiredHtml {
 Write-Host "Validating tools hub structure..." -ForegroundColor Cyan
 
 $toolHtmlFiles = Get-ChildItem (Join-Path $repoRoot "tools") -Recurse -Filter "index.html" | Sort-Object FullName
+$tools = @(Get-ToolDefinitions)
+$expectedToolCount = $tools.Count
 $landingPage = $toolHtmlFiles | Where-Object { (Get-RelativePath $_.FullName) -eq "tools/index.html" }
 $categoryPages = @()
 $toolPages = @()
@@ -145,8 +147,9 @@ foreach ($file in $toolHtmlFiles) {
 
 Assert-True ($null -ne $landingPage) "Missing tools landing page."
 Assert-True ($categoryPages.Count -eq 5) "Expected 5 category pages, found $($categoryPages.Count)."
-Assert-True ($toolPages.Count -eq 43) "Expected 43 tool pages, found $($toolPages.Count)."
-Assert-True ($toolHtmlFiles.Count -eq 49) "Expected 49 tools HTML routes, found $($toolHtmlFiles.Count)."
+Assert-True ($expectedToolCount -gt 0) "Expected at least one tool definition."
+Assert-True ($toolPages.Count -eq $expectedToolCount) "Expected $expectedToolCount tool pages, found $($toolPages.Count)."
+Assert-True ($toolHtmlFiles.Count -eq ($expectedToolCount + $categoryPages.Count + 1)) "Tools HTML route count does not match the registry plus category pages and landing page."
 
 foreach ($file in $toolHtmlFiles) {
   $relativePath = Get-RelativePath $file.FullName
@@ -164,12 +167,15 @@ foreach ($file in $toolHtmlFiles) {
 
 Write-Host "Validating tool registry and controller wiring..." -ForegroundColor Cyan
 
-$tools = @(Get-ToolDefinitions)
 $controllerNames = @(Get-ControllerNamesFromApp)
+$liveTools = @($tools | Where-Object live)
+$plannedTools = @($tools | Where-Object { -not $_.live })
 
-Assert-True ($tools.Count -eq 43) "Expected 43 tool definitions, found $($tools.Count)."
-Assert-True ((@($tools | Where-Object live).Count) -eq 9) "Expected 9 live tools, found $(@($tools | Where-Object live).Count)."
-Assert-True ((@($tools | Where-Object { -not $_.live }).Count) -eq 34) "Expected 34 planned tools, found $(@($tools | Where-Object { -not $_.live }).Count)."
+Assert-True (($liveTools.Count + $plannedTools.Count) -eq $tools.Count) "Live/planned totals do not match the tool definition count."
+Assert-True ($liveTools.Count -gt 0) "At least one live tool is expected."
+Assert-True ($plannedTools.Count -gt 0) "At least one planned tool is expected."
+Assert-True ((@($liveTools | Where-Object { $_.status -ne "live" }).Count) -eq 0) "Some live tools are not marked with status 'live'."
+Assert-True ((@($plannedTools | Where-Object { $_.status -ne "planned" }).Count) -eq 0) "Some planned tools are not marked with status 'planned'."
 Assert-True ((@($tools.id | Sort-Object -Unique).Count) -eq $tools.Count) "Tool IDs are not unique."
 Assert-True ((@($tools.slug | Sort-Object -Unique).Count) -eq $tools.Count) "Tool slugs are not unique."
 
@@ -203,6 +209,8 @@ foreach ($tool in $tools) {
 
   if ($tool.live) {
     Assert-True ($tool.controller -ne "planned-tool") "Live tool '$($tool.id)' points to planned-tool controller."
+    $toolHtml = Get-Content $absolutePath -Raw
+    Assert-True ($toolHtml -notmatch 'Planned browser-only') "Live tool '$($tool.id)' still has planned-only HTML metadata."
   }
 }
 
@@ -244,7 +252,7 @@ $expectedRoutes += @($toolHtmlFiles | ForEach-Object {
   "$siteUrl$(Get-RouteFromRelativePath (Get-RelativePath $_.FullName))"
 })
 
-Assert-True ($sitemapUrls.Count -eq 50) "Expected 50 sitemap URLs, found $($sitemapUrls.Count)."
+Assert-True ($sitemapUrls.Count -eq $expectedRoutes.Count) "Expected $($expectedRoutes.Count) sitemap URLs, found $($sitemapUrls.Count)."
 foreach ($url in $expectedRoutes) {
   Assert-True ($sitemapUrls -contains $url) "Sitemap is missing $url"
 }
@@ -260,6 +268,11 @@ $plannedController = Get-Content (Join-Path $repoRoot "assets/js/tools/controlle
 Assert-True ($plannedController -match 'planned-panel') "Planned tool controller no longer renders the planned panel."
 Assert-True ($plannedController -notmatch 'tool-input|tool-button') "Planned tool controller should not render fake interactive inputs or buttons."
 
+$toolsApp = Get-Content (Join-Path $repoRoot "assets/js/tools/app.js") -Raw
+Assert-True ($toolsApp -match 'getLiveTools') "Tools landing page should import getLiveTools for live counts."
+Assert-True ($toolsApp -match 'liveTools\.length') "Tools landing page should show the live tool count."
+Assert-True ($toolsApp -match 'liveTools\.map') "Tools landing page should render the live tools collection."
+
 if ($failures.Count -gt 0) {
   Write-Host ""
   Write-Host "Validation failed with $($failures.Count) issue(s):" -ForegroundColor Red
@@ -273,6 +286,6 @@ Write-Host " - Tools HTML routes: $($toolHtmlFiles.Count)"
 Write-Host " - Category pages: $($categoryPages.Count)"
 Write-Host " - Tool pages: $($toolPages.Count)"
 Write-Host " - Tool definitions: $($tools.Count)"
-Write-Host " - Live tools: $(@($tools | Where-Object live).Count)"
-Write-Host " - Planned tools: $(@($tools | Where-Object { -not $_.live }).Count)"
+Write-Host " - Live tools: $($liveTools.Count)"
+Write-Host " - Planned tools: $($plannedTools.Count)"
 Write-Host " - Sitemap URLs: $($sitemapUrls.Count)"

@@ -1878,8 +1878,26 @@ html[dir="rtl"] .share-modal__close {
     text-align: center;
   }
 
+  .work__filters {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-inline: -0.2rem;
+    padding-inline: 0.2rem;
+    padding-bottom: 0.2rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .work__filters::-webkit-scrollbar {
+    display: none;
+  }
+
   .work__item {
-    flex: 1 1 calc(50% - 0.5rem);
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-width: max-content;
+    padding: 0.55rem 1rem;
   }
 }
 

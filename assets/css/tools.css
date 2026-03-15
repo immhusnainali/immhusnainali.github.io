@@ -617,6 +617,64 @@
   font-size: var(--small-font-size);
 }
 
+.calculator-display {
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.calculator-display--result {
+  font-weight: var(--font-semi-bold);
+  color: var(--title-color);
+}
+
+.calculator-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.calculator-key--accent {
+  border-color: hsla(var(--first-hue), var(--sat), var(--lig), 0.36);
+}
+
+.history-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.history-item {
+  width: 100%;
+  text-align: left;
+  padding: 0.85rem 0.95rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--border-color);
+  background: hsla(var(--second-hue), 24%, 18%, 0.72);
+  color: var(--title-color);
+  overflow-wrap: anywhere;
+}
+
+.light-theme .history-item {
+  background: #ffffff;
+}
+
+.share-preview-content {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.share-preview-content i {
+  font-size: 2rem;
+  color: var(--first-color);
+}
+
+.share-selected-file {
+  display: grid;
+  gap: 0.35rem;
+}
+
 @media screen and (max-width: 900px) {
   .hero-grid,
   .tool-page-grid {

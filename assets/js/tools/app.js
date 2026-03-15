@@ -2,7 +2,7 @@ import {
   CATEGORY_ORDER,
   CATEGORY_META,
   TOOL_REGISTRY,
-  getFeaturedTools,
+  getLiveTools,
   getRelatedTools,
   getTool,
   getToolsByCategory,
@@ -16,8 +16,18 @@ import { mountTool as mountImageCompressor } from "./controllers/image-compresso
 import { mountTool as mountImageResizer } from "./controllers/image-resizer.js";
 import { mountTool as mountJsonFormatter } from "./controllers/json-formatter.js";
 import { mountTool as mountPasswordGenerator } from "./controllers/password-generator.js";
+import { mountTool as mountPasswordStrength } from "./controllers/password-strength.js";
+import { mountTool as mountQuickShareLite } from "./controllers/quick-share-lite.js";
 import { mountTool as mountQrGenerator } from "./controllers/qr-generator.js";
+import { mountTool as mountRandomNumber } from "./controllers/random-number.js";
+import { mountTool as mountRandomToken } from "./controllers/random-token.js";
+import { mountTool as mountStringCodecs } from "./controllers/string-codecs.js";
+import { mountTool as mountTextTransformTools } from "./controllers/text-transform-tools.js";
+import { mountTool as mountTimestampConverter } from "./controllers/timestamp-converter.js";
+import { mountTool as mountUuidGenerator } from "./controllers/uuid-generator.js";
 import { mountTool as mountWordCounter } from "./controllers/word-counter.js";
+import { mountTool as mountCharacterCounter } from "./controllers/character-counter.js";
+import { mountTool as mountCalculator } from "./controllers/calculator.js";
 import { mountTool as mountPlannedTool } from "./controllers/planned-tool.js";
 
 const CONTROLLERS = {
@@ -28,8 +38,18 @@ const CONTROLLERS = {
   "image-resizer": mountImageResizer,
   "json-formatter": mountJsonFormatter,
   "password-generator": mountPasswordGenerator,
+  "password-strength": mountPasswordStrength,
+  "quick-share-lite": mountQuickShareLite,
   "qr-generator": mountQrGenerator,
+  "random-number": mountRandomNumber,
+  "random-token": mountRandomToken,
+  "string-codecs": mountStringCodecs,
+  "text-transform-tools": mountTextTransformTools,
+  "timestamp-converter": mountTimestampConverter,
+  "uuid-generator": mountUuidGenerator,
   "word-counter": mountWordCounter,
+  "character-counter": mountCharacterCounter,
+  "calculator": mountCalculator,
   "planned-tool": mountPlannedTool,
 };
 
@@ -106,7 +126,7 @@ function renderTrustSection(uiCopy) {
 
 function renderLanding(root, language) {
   const uiCopy = getUiCopy(language);
-  const featuredTools = getFeaturedTools();
+  const liveTools = getLiveTools();
   const toolGrid = el("div", { className: "tool-grid" });
   const categoryRow = el("div", { className: "chip-row" });
   const searchInput = el("input", {
@@ -205,8 +225,8 @@ function renderLanding(root, language) {
                 el("span", { text: "Dedicated tool pages" }),
               ]),
               el("div", { className: "kpi-item" }, [
-                el("strong", { text: String(featuredTools.length) }),
-                el("span", { text: "Featured live tools" }),
+                el("strong", { text: String(liveTools.length) }),
+                el("span", { text: "Live browser tools" }),
               ]),
               el("div", { className: "kpi-item" }, [
                 el("strong", { text: "100%" }),
@@ -234,7 +254,7 @@ function renderLanding(root, language) {
       el("section", { className: "tools-panel tools-stack" }, [
         el("div", { className: "section-header" }, [
           el("div", {}, [
-            el("span", { className: "section-kicker", text: uiCopy.common.featured }),
+            el("span", { className: "section-kicker", text: uiCopy.common.liveLabel }),
             el("h2", { className: "section-title", text: uiCopy.landing.featuredTitle }),
             el("p", { className: "section-text", text: uiCopy.landing.featuredText }),
           ]),
@@ -242,7 +262,7 @@ function renderLanding(root, language) {
         el(
           "div",
           { className: "tool-grid" },
-          featuredTools.map((tool) => renderToolCard(tool, uiCopy, language))
+          liveTools.map((tool) => renderToolCard(tool, uiCopy, language))
         ),
       ]),
       renderTrustSection(uiCopy),
