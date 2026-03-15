@@ -413,6 +413,17 @@ body.light-theme {
   box-shadow: 0 2px 16px hsla(var(--second-hue), 48%, 8%, 0.1);
 }
 
+.light-theme .tools-spotlight {
+  background:
+    radial-gradient(circle at top right, hsla(var(--first-hue), var(--sat), var(--lig), 0.16), transparent 32%),
+    linear-gradient(135deg, hsla(0, 0%, 100%, 0.98), hsla(220, 38%, 96%, 0.96));
+  box-shadow: 0 12px 28px hsla(var(--second-hue), 48%, 8%, 0.1);
+}
+
+.light-theme .tools-spotlight__stat {
+  background-color: hsla(0, 0%, 100%, 0.88);
+}
+
 .light-theme::-webkit-scrollbar {
   background-color: hsl(var(--second-hue), 8%, 80%);
 }
@@ -1120,8 +1131,92 @@ body.light-theme {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   column-gap: 0.75rem;
+  row-gap: 0.55rem;
   margin-bottom: 2rem;
+}
+
+.tools-spotlight {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.25rem;
+  align-items: center;
+  max-width: 968px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  border: 1px solid hsla(var(--first-hue), var(--sat), var(--lig), 0.18);
+  background:
+    radial-gradient(circle at top right, hsla(var(--first-hue), var(--sat), var(--lig), 0.18), transparent 32%),
+    linear-gradient(135deg, hsla(var(--second-hue), 32%, 14%, 0.96), hsla(var(--second-hue), 28%, 11%, 0.98));
+  box-shadow: 0 18px 42px hsla(var(--second-hue), 48%, 8%, 0.22);
+}
+
+.tools-spotlight::before {
+  content: "";
+  position: absolute;
+  inset: auto auto -4rem -3rem;
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  background: hsla(var(--first-hue), var(--sat), var(--lig), 0.14);
+  filter: blur(10px);
+}
+
+.tools-spotlight > * {
+  position: relative;
+  z-index: 1;
+}
+
+.tools-spotlight__copy,
+.tools-spotlight__stat {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.tools-spotlight__eyebrow {
+  width: fit-content;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background-color: hsla(var(--first-hue), var(--sat), var(--lig), 0.14);
+  color: var(--first-color);
+  font-size: var(--tiny-font-size);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tools-spotlight__title {
+  font-size: var(--h2-font-size);
+}
+
+.tools-spotlight__text {
+  max-width: 38rem;
+}
+
+.tools-spotlight__stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.tools-spotlight__stat {
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  background-color: hsla(var(--second-hue), 24%, 18%, 0.62);
+  border: 1px solid hsla(var(--first-hue), var(--sat), var(--lig), 0.12);
+}
+
+.tools-spotlight__stat strong {
+  color: var(--title-color);
+  font-size: 1.35rem;
+}
+
+.tools-spotlight__button {
+  width: max-content;
+  justify-self: start;
 }
 
 .work__item {
@@ -1130,6 +1225,10 @@ body.light-theme {
   padding: 0.25rem 0.75rem;
   font-weight: var(--font-medium);
   border-radius: 0.5rem;
+  min-height: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .work__card {
@@ -1547,7 +1646,9 @@ html[dir="rtl"] .share-modal__close {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   column-gap: 1.5rem;
+  row-gap: 0.75rem;
   margin-bottom: 2rem;
 }
 
@@ -1701,6 +1802,14 @@ html[dir="rtl"] .share-modal__close {
   .work__filters {
     column-gap: 0.25rem;
   }
+
+  .tools-spotlight__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .tools-spotlight {
+    padding: 1rem;
+  }
 }
 
 @media screen and (min-width: 435px) {
@@ -1758,6 +1867,19 @@ html[dir="rtl"] .share-modal__close {
     width: 1.9rem;
     height: 1.9rem;
     font-size: 1.1rem;
+  }
+
+  .tools-spotlight {
+    padding: 1.2rem;
+  }
+
+  .tools-spotlight__button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .work__item {
+    flex: 1 1 calc(50% - 0.5rem);
   }
 }
 
@@ -1822,6 +1944,10 @@ html[dir="rtl"] .share-modal__close {
 
   .work__img {
     width: 250px;
+  }
+
+  .tools-spotlight {
+    grid-template-columns: minmax(0, 1.7fr) minmax(220px, 0.9fr) auto;
   }
 
   .testimonial__container {
