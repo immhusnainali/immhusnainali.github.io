@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Official Eid Decision - Premium Prank</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg1: #081120;
+      --bg2: #12233d;
+      --gold: #f5c542;
+      --gold-soft: #ffe9a8;
+      --red: #d62828;
+      --green: #22c55e;
+      --white: #ffffff;
+      --muted: #d8e1ec;
+      --paper: #fffdf8;
+      --ink: #1f2937;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top right, rgba(245, 197, 66, 0.16), transparent 25%),
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 20%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--white);
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: twinkle 2.5s infinite alternate;
+    }
+
+    @keyframes twinkle {
+      from { opacity: 0.2; transform: scale(1); }
+      to { opacity: 1; transform: scale(1.8); }
+    }
+
+    .moon {
+      position: fixed;
+      top: 22px;
+      right: 20px;
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fffbe0, var(--gold));
+      box-shadow: 0 0 40px rgba(245, 197, 66, 0.35);
+      z-index: 0;
+      animation: floatMoon 4.5s ease-in-out infinite;
+    }
+
+    @keyframes floatMoon {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px 12px 40px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 16px;
+      padding-top: 8px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: var(--gold-soft);
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      margin-bottom: 12px;
+      font-size: 0.83rem;
+      max-width: 95%;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 1.55rem;
+      line-height: 1.2;
+      padding: 0 8px;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 12px auto 0;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 0.95rem;
+      padding: 0 8px;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 22px;
+      box-shadow: 0 22px 70px rgba(0,0,0,0.28);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .panel-top {
+      padding: 14px 16px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .dot.red { background: #ff5f57; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green { background: #28c840; }
+
+    .content {
+      padding: 14px;
+    }
+
+    .stage {
+      display: none;
+      animation: fadeUp 0.7s ease;
+    }
+
+    .stage.active {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .official-paper {
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 18px;
+      padding: 20px 16px;
+      border: 4px solid #22324a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .official-strip {
+      height: 8px;
+      background: linear-gradient(to right, #0f172a, #3b4d69, #0f172a);
+      margin: -20px -16px 18px;
+    }
+
+    .official-header {
+      text-align: center;
+      border-bottom: 2px solid #d5dbe3;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+
+    .official-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      line-height: 1.3;
+    }
+
+    .official-header p {
+      margin: 8px 0 0;
+      color: #475569;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .official-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.88rem;
+      color: #374151;
+      margin-bottom: 16px;
+    }
+
+    .official-body {
+      line-height: 1.75;
+      font-size: 0.97rem;
+      padding-bottom: 12px;
+    }
+
+    .mark {
+      background: #fff3bf;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-weight: 700;
+    }
+
+    .warning-note {
+      margin-top: 16px;
+      background: #fff1f2;
+      border-left: 5px solid var(--red);
+      padding: 12px 13px;
+      color: #7f1d1d;
+      font-weight: 700;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .stamp {
+      position: static;
+      margin: 18px auto 0;
+      width: 118px;
+      height: 118px;
+      border: 4px double #9f1239;
+      color: #9f1239;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transform: rotate(-10deg);
+      font-weight: 900;
+      background: rgba(255,255,255,0.82);
+      font-size: 0.8rem;
+      line-height: 1.2;
+      padding: 10px;
+    }
+
+    .center-box {
+      text-align: center;
+      padding: 8px 2px 2px;
+    }
+
+    .big-title {
+      font-size: 1.4rem;
+      margin: 0 0 10px;
+      line-height: 1.25;
+    }
+
+    .subline {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.65;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .scanner {
+      max-width: 760px;
+      margin: 18px auto 0;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 16px;
+      padding: 14px;
+      text-align: left;
+      font-family: Consolas, monospace;
+      min-height: 200px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    .scan-line {
+      color: #9ef0b8;
+      margin: 0 0 8px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .vs-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .vs-card {
+      border-radius: 20px;
+      padding: 20px 16px;
+      min-height: auto;
+      text-align: center;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.18);
+    }
+
+    .wrong-card {
+      background: linear-gradient(135deg, rgba(214,40,40,0.24), rgba(127,29,29,0.25));
+      border: 2px solid rgba(254, 202, 202, 0.25);
+    }
+
+    .right-card {
+      background: linear-gradient(135deg, rgba(34,197,94,0.24), rgba(21,128,61,0.24));
+      border: 2px solid rgba(187,247,208,0.28);
+    }
+
+    .vs-label {
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      font-size: 0.92rem;
+      opacity: 0.95;
+    }
+
+    .adil-name {
+      font-size: 2.4rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--gold);
+      text-shadow: 0 0 18px rgba(245, 197, 66, 0.25);
+      margin: 6px 0 10px;
+      animation: pulse 1.5s infinite alternate;
+      word-break: break-word;
+    }
+
+    .date {
+      font-size: 1.9rem;
+      font-weight: 900;
+      margin: 10px 0;
+      line-height: 1.15;
+      word-break: break-word;
+    }
+
+    .wrong-card .date {
+      color: #fecaca;
+    }
+
+    .right-card .date {
+      color: #bbf7d0;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.03); }
+    }
+
+    .joke-box {
+      margin-top: 16px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 14px;
+      color: #fde68a;
+      font-weight: 700;
+      font-size: 0.96rem;
+      line-height: 1.6;
+    }
+
+    .certificate {
+      background: linear-gradient(180deg, #fffef9, #fff7df);
+      color: #1f2937;
+      border-radius: 20px;
+      padding: 16px 12px;
+      border: 5px solid #d4a514;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .certificate:before,
+    .certificate:after {
+      content: "";
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: rgba(245, 197, 66, 0.12);
+    }
+
+    .certificate:before {
+      top: -50px;
+      left: -50px;
+    }
+
+    .certificate:after {
+      bottom: -55px;
+      right: -55px;
+    }
+
+    .cert-inner {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      border: 2px dashed rgba(31,41,55,0.22);
+      border-radius: 14px;
+      padding: 18px 12px;
+    }
+
+    .cert-small {
+      text-transform: uppercase;
+      letter-spacing: 1.3px;
+      font-size: 0.72rem;
+      color: #6b7280;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .cert-title {
+      font-size: 1.5rem;
+      margin: 10px 0 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.25;
+    }
+
+    .cert-name {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #b45309;
+      margin: 12px 0 8px;
+      line-height: 1.05;
+      word-break: break-word;
+    }
+
+    .cert-text {
+      max-width: 760px;
+      margin: 0 auto;
+      line-height: 1.7;
+      font-size: 0.92rem;
+      color: #374151;
+    }
+
+    .award-pill {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #1f2937;
+      color: #fff5d6;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      max-width: 100%;
+    }
+
+    .sign-row {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    .sign-box {
+      flex: 1;
+      min-width: 100%;
+      text-align: center;
+      color: #4b5563;
+      font-size: 0.88rem;
+    }
+
+    .sign-line {
+      height: 2px;
+      background: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 18px;
+      font-size: 0.96rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.25s ease;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f5c542, #e99b00);
+      color: #1f2937;
+      box-shadow: 0 12px 30px rgba(233, 155, 0, 0.25);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.11);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    button:hover {
+      transform: translateY(-1px) scale(1.01);
+    }
+
+    .progress-wrap {
+      max-width: 760px;
+      margin: 16px auto 0;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22c55e, #f5c542, #ef4444);
+      transition: width 0.6s ease;
+    }
+
+    .progress-text {
+      margin-top: 8px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .confetti {
+      position: fixed;
+      width: 8px;
+      height: 14px;
+      top: -20px;
+      opacity: 0.9;
+      z-index: 99;
+      border-radius: 2px;
+      animation: fall linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(720deg);
+      }
+    }
+
+    @media (min-width: 640px) {
+      .wrapper {
+        padding: 24px 18px 50px;
+      }
+
+      .moon {
+        top: 28px;
+        right: 28px;
+        width: 92px;
+        height: 92px;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .official-meta {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .controls {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      button {
+        width: auto;
+        min-width: 180px;
+      }
+
+      .vs-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .adil-name {
+        font-size: 3.2rem;
+      }
+
+      .date {
+        font-size: 2.2rem;
+      }
+
+      .sign-row {
+        flex-direction: row;
+      }
+
+      .sign-box {
+        min-width: 180px;
+      }
+    }
+
+    @media (min-width: 900px) {
+      .wrapper {
+        padding: 30px 18px 50px;
+      }
+
+      .moon {
+        top: 45px;
+        right: 55px;
+        width: 110px;
+        height: 110px;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .content {
+        padding: 22px;
+      }
+
+      .official-paper {
+        padding: 28px 24px;
+        border-radius: 22px;
+        border-width: 6px;
+      }
+
+      .official-strip {
+        height: 10px;
+        margin: -28px -24px 22px;
+      }
+
+      .official-header h2 {
+        font-size: 1.8rem;
+      }
+
+      .official-body {
+        font-size: 1.08rem;
+      }
+
+      .stamp {
+        position: absolute;
+        right: 22px;
+        bottom: 18px;
+        width: 150px;
+        height: 150px;
+        font-size: 0.95rem;
+        transform: rotate(-16deg);
+      }
+
+      .big-title {
+        font-size: 2rem;
+      }
+
+      .scanner {
+        padding: 18px;
+        min-height: 220px;
+        max-height: 340px;
+        font-size: 0.92rem;
+      }
+
+      .adil-name {
+        font-size: 4.5rem;
+      }
+
+      .date {
+        font-size: 2.6rem;
+      }
+
+      .certificate {
+        padding: 28px 24px;
+        border-radius: 26px;
+        border-width: 8px;
+      }
+
+      .certificate:before,
+      .certificate:after {
+        width: 220px;
+        height: 220px;
+      }
+
+      .cert-inner {
+        border-radius: 18px;
+        padding: 24px 16px;
+      }
+
+      .cert-title {
+        font-size: 2.4rem;
+      }
+
+      .cert-name {
+        font-size: 3.6rem;
+      }
+
+      .cert-text {
+        font-size: 1.06rem;
+      }
+
+      .award-pill {
+        font-size: 1rem;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .moon,
+      .stars,
+      .controls,
+      .panel-top {
+        display: none !important;
+      }
+
+      .panel {
+        box-shadow: none;
+        border: none;
+        background: white;
+      }
+
+      .content {
+        padding: 0;
+      }
+
+      .stage {
+        display: none !important;
+      }
+
+      .stage.active {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  <div class="moon"></div>
+
+  <div class="wrapper">
+    <div class="hero">
+      <div class="hero-badge">Premium Academy Moon Investigation Portal</div>
+      <h1>Official Eid Decision & Advanced Sir Adil Analysis System</h1>
+      <p>
+        A dramatic prank page for academy fun: first it looks official, then it scans the argument,
+        then it reveals the final moon verdict, and finally awards Sir Adil for extraordinary confidence.
+      </p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-top">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+      </div>
+
+      <div class="content">
+        <section class="stage active" id="stage1">
+          <div class="official-paper">
+            <div class="official-strip"></div>
+
+            <div class="official-header">
+              <h2>Government of Advanced Moon Affairs</h2>
+              <p>Academy Ruet-e-Hilal Research & Argument Control Committee</p>
+            </div>
+
+            <div class="official-meta">
+              <div><strong>Reference No:</strong> AMA/EID/2026/021</div>
+              <div><strong>Date:</strong> 21-03-2026</div>
+            </div>
+
+            <div class="official-body">
+              After detailed moon sighting review, academic debate, sky observation, calendar verification,
+              and the inspection of highly confident but suspicious calculations, it is hereby announced that
+              <span class="mark">Eid will be observed on 21-03-2026</span>.
+
+              <br><br>
+
+              During the investigation, one independent analyst,
+              <span class="mark">Sir Adil</span>, strongly proposed the historic date
+              <span class="mark">20-30-2026</span>. The committee appreciates his courage and imagination.
+
+              <div class="warning-note">
+                Special note: the committee regrets to inform the public that “20-30-2026” is not a date currently recognized by the calendar.
+              </div>
+            </div>
+
+            <div class="stamp">
+              Officially<br>Rejected<br>20-30-2026
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="btn-primary" onclick="goToStage(2)">Start Premium Investigation</button>
+            <button class="btn-secondary" onclick="window.print()">Print</button>
+          </div>
+        </section>
+
+        <section class="stage" id="stage2">
+          <div class="center-box">
+            <h2 class="big-title">Live Argument Scanner</h2>
+            <p class="subline">
+              Scanning moon data, student logic, normal calendar rules, and the mysterious Sir Adil Theory of Dates.
+            </p>
+
+            <div class="progress-wrap">
+              <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+              <div class="progress-text" id="progressText">Preparing scan...</div>
+            </div>
+
+            <div class="scanner" id="scannerBox"></div>
+
+            <div class="controls">
+              <button class="btn-primary" id="scanBtn" onclick="startScan()">Run Full Scan</button>
+              <button class="btn-secondary" onclick="goToStage(1)">Back</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="stage" id="stage3">
+          <div class="center-box">
+            <h2 class="big-title">Final Premium Verdict</h2>
+            <p class="subline">
+              The results are complete. The moon, the calendar, and reality itself have responded.
+            </p>
+
+            <div class="vs-grid">
+              <div class="vs-card wrong-card">
+                <div class="vs-label">Sir Adil’s Prediction</div>
+                <div class="adil-name">SIR ADIL</div>
+                <div class="date">20-30-2026</div>
+                <p>
+                  A fearless date. A bold theory. A complete attack on accepted calendar structure.
+                </p>
+              </div>
+
+              <div class="vs-card right-card">
+                <div class="vs-label">Actual Eid Date</div>
+                <div class="date">21-03-2026</div>
+                <p>
+                  Verified by moon sighting, basic logic, standard dates, and the fact that months do not behave emotionally.
+                </p>
+              </div>
+            </div>
+
+            <div class="joke-box">
+              Breaking result: Sir Adil did not just predict Eid — he discovered a whole new dimension of confidence. 🌙😂
+            </div>
+
+            <div class="controls">
+              <button class="btn-primary" onclick="revealAward()">Reveal Award</button>
+              <button class="btn-secondary" onclick="playAnnouncement()">Play Announcement</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="stage" id="stage4">
+          <div class="certificate">
+            <div class="cert-inner">
+              <div class="cert-small">Certificate of Extraordinary Achievement</div>
+              <div class="cert-title">Premium Moon Prediction Award</div>
+
+              <div class="cert-text">
+                This is proudly presented to
+              </div>
+
+              <div class="cert-name">Sir Adil</div>
+
+              <div class="cert-text">
+                for outstanding bravery in confidently defending the unforgettable date
+                <strong>20-30-2026</strong>, and for making a historic contribution to advanced imaginary calendar science.
+                <br><br>
+                In recognition of exceptional self-belief, dramatic argument energy, and the successful invention of a date not supported by Earth.
+              </div>
+
+              <div class="award-pill">
+                Chairman, International Committee of Impossible Dates
+              </div>
+
+              <div class="sign-row">
+                <div class="sign-box">
+                  <div class="sign-line"></div>
+                  Verified by Moon
+                </div>
+                <div class="sign-box">
+                  <div class="sign-line"></div>
+                  Approved by Students
+                </div>
+                <div class="sign-box">
+                  <div class="sign-line"></div>
+                  Rejected by Calendar
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="btn-primary" onclick="restartAll()">Run Again</button>
+            <button class="btn-secondary" onclick="window.print()">Print Award</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const lines = [
+      "Connecting to National Moon Observation Server...",
+      "Checking visibility report from academy rooftop...",
+      "Comparing Ruet-e-Hilal data with standard calendar...",
+      "Loading student arguments...",
+      "Loading Sir Adil confidence level...",
+      "Confidence level detected: EXTREMELY HIGH...",
+      "Checking whether 20-30-2026 exists...",
+      "Result: not found in current calendar system...",
+      "Consulting moon, sky, and normal humans...",
+      "Verifying actual Eid date...",
+      "Final verdict prepared successfully.",
+      "Conclusion: Eid is on 21-03-2026. Sir Adil has invented his own month."
+    ];
+
+    const scannerBox = document.getElementById("scannerBox");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const scanBtn = document.getElementById("scanBtn");
+
+    let scanStarted = false;
+
+    function createStars() {
+      const stars = document.getElementById("stars");
+      for (let i = 0; i < 55; i++) {
+        const s = document.createElement("div");
+        s.className = "star";
+        s.style.left = Math.random() * 100 + "vw";
+        s.style.top = Math.random() * 100 + "vh";
+        s.style.animationDelay = (Math.random() * 2.5) + "s";
+        s.style.opacity = (Math.random() * 0.8 + 0.2).toFixed(2);
+        stars.appendChild(s);
+      }
+    }
+
+    function goToStage(num) {
+      document.querySelectorAll(".stage").forEach(stage => stage.classList.remove("active"));
+      document.getElementById("stage" + num).classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function startScan() {
+      if (scanStarted) return;
+      scanStarted = true;
+      scanBtn.disabled = true;
+      scanBtn.style.opacity = "0.65";
+      scannerBox.innerHTML = "";
+      progressFill.style.width = "0%";
+      progressText.textContent = "Investigation in progress...";
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = document.createElement("div");
+        line.className = "scan-line";
+        line.textContent = "> " + lines[i];
+        scannerBox.appendChild(line);
+        scannerBox.scrollTop = scannerBox.scrollHeight;
+
+        const percent = Math.round(((i + 1) / lines.length) * 100);
+        progressFill.style.width = percent + "%";
+        progressText.textContent = "Scan progress: " + percent + "%";
+
+        await wait(700);
+      }
+
+      await wait(700);
+      goToStage(3);
+      launchConfetti();
+    }
+
+    function revealAward() {
+      goToStage(4);
+      launchConfetti();
+      playAwardVoice();
+    }
+
+    function restartAll() {
+      scanStarted = false;
+      scanBtn.disabled = false;
+      scanBtn.style.opacity = "1";
+      scannerBox.innerHTML = "";
+      progressFill.style.width = "0%";
+      progressText.textContent = "Preparing scan...";
+      goToStage(1);
+    }
+
+    function wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function launchConfetti() {
+      const colors = ["#f5c542", "#ffffff", "#ef4444", "#22c55e", "#60a5fa", "#f472b6"];
+      for (let i = 0; i < 70; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDuration = (Math.random() * 3 + 2.2) + "s";
+        c.style.transform = "rotate(" + (Math.random() * 360) + "deg)";
+        document.body.appendChild(c);
+
+        setTimeout(() => c.remove(), 6000);
+      }
+    }
+
+    function playAnnouncement() {
+      if ("speechSynthesis" in window) {
+        const msg = new SpeechSynthesisUtterance(
+          "Official academy announcement. After complete investigation, Eid is on 21 March 2026. Sir Adil's proposed date, 20 30 2026, has been respectfully rejected by the calendar."
+        );
+        msg.rate = 1;
+        msg.pitch = 1.05;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(msg);
+      } else {
+        alert("Your browser does not support voice announcement.");
+      }
+    }
+
+    function playAwardVoice() {
+      if ("speechSynthesis" in window) {
+        const msg = new SpeechSynthesisUtterance(
+          "Congratulations Sir Adil. You have been awarded the Chairman of the International Committee of Impossible Dates."
+        );
+        msg.rate = 1;
+        msg.pitch = 1.08;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(msg);
+      }
+    }
+
+    createStars();
+  </script>
+</body>
+</html>
