@@ -1,11 +1,11 @@
 # Optional Apache helpers for mhusnain.online uploads.
-# Safe to omit on nginx/IIS — failover still works via no-cors probe.
+# CORS needed so github.io can probe health + tools before redirecting.
 
 <IfModule mod_headers.c>
-  <Files "health.txt">
-    Header set Access-Control-Allow-Origin "*"
-    Header set Cache-Control "no-store, max-age=0"
-  </Files>
+  SetEnvIf Request_URI "^/health\.txt$" CORS_PROBE=1
+  SetEnvIf Request_URI "^/tools/index\.html$" CORS_PROBE=1
+  Header set Access-Control-Allow-Origin "*" env=CORS_PROBE
+  Header set Cache-Control "no-store, max-age=0" env=CORS_PROBE
 </IfModule>
 
 # Prevent directory listing

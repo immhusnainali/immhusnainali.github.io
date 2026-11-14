@@ -36,27 +36,32 @@
         if (new URLSearchParams(location.search).get("noredirect") === "1") return;
 
         var healthUrl = PRIMARY + "/health.txt?t=" + Date.now();
+        var toolsProbeUrl = PRIMARY + "/tools/index.html?t=" + Date.now();
         var redirected = false;
         var controller = new AbortController();
         var timer = setTimeout(function () {
           controller.abort();
-        }, 2000);
+        }, 2500);
 
-        // Only redirect when health.txt is readable with CORS and returns ok.
-        // Do not use no-cors: a coming-soon page would look "up" and break /tools/.
-        fetch(healthUrl, {
-          mode: "cors",
-          cache: "no-store",
-          signal: controller.signal,
-        })
-          .then(function (response) {
-            if (!response.ok) throw new Error("health-failed");
-            return response.text();
+        // Only redirect when primary is fully ready:
+        // health.txt says ok AND tools/index.html has real HTML (not empty upload).
+        Promise.all([
+          fetch(healthUrl, { mode: "cors", cache: "no-store", signal: controller.signal }),
+          fetch(toolsProbeUrl, { mode: "cors", cache: "no-store", signal: controller.signal }),
+        ])
+          .then(function (responses) {
+            var healthRes = responses[0];
+            var toolsRes = responses[1];
+            if (!healthRes.ok || !toolsRes.ok) throw new Error("health-failed");
+            return Promise.all([healthRes.text(), toolsRes.text()]);
           })
-          .then(function (text) {
+          .then(function (parts) {
             clearTimeout(timer);
-            if (String(text || "").trim().toLowerCase().indexOf("ok") === -1) {
-              throw new Error("health-invalid");
+            var healthText = String(parts[0] || "").trim().toLowerCase();
+            var toolsHtml = String(parts[1] || "");
+            if (healthText.indexOf("ok") === -1) throw new Error("health-invalid");
+            if (toolsHtml.length < 200 || toolsHtml.toLowerCase().indexOf("<!doctype html") === -1) {
+              throw new Error("tools-incomplete");
             }
             if (redirected) return;
             redirected = true;
@@ -72,7 +77,7 @@
           })
           .catch(function () {
             clearTimeout(timer);
-            /* Primary not ready — stay on GitHub Pages. */
+            /* Primary incomplete — stay on GitHub Pages. */
           });
       })();
     </script>

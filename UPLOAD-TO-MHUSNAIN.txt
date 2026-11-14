@@ -1,21 +1,37 @@
 Upload checklist for mhusnain.online (your other server)
 =======================================================
 
-1. Upload the full site contents to your domain document root
-   (same files as this repo root: index.html, health.txt, assets/, tools/, etc.).
+IMPORTANT: tools/ on mhusnain.online was uploaded as EMPTY files (0 bytes).
+That is why Tools works on github.io but not on mhusnain.online.
 
-2. Make sure health.txt is reachable at:
+QUICK FIX (minimum):
+  Upload mhusnain-tools-fix.zip contents (the tools/ folder) over
+  the existing empty tools/ on mhusnain.online document root.
+  JS under assets/js/tools/ is already present on the server.
+
+1. Or re-upload the FULL site from this repo to the domain document root.
+   Required folders/files (do not skip):
+   - index.html
+   - health.txt
+   - .htaccess (Apache only — updated CORS for tools probe)
+   - assets/   (entire folder)
+   - tools/    (entire folder — every tools/**/index.html must be non-empty)
+
+2. Verify these URLs after upload:
    https://mhusnain.online/health.txt
-   It must return plain text: ok
+     -> must show: ok
+   https://mhusnain.online/tools/index.html
+     -> must show HTML source starting with <!DOCTYPE html> (NOT blank)
+   https://mhusnain.online/tools/
+     -> Browser Tools Hub page
+   https://mhusnain.online/assets/js/tools/app.js
+     -> JavaScript file
 
-3. If the server is Apache, keep .htaccess (CORS for health.txt).
-   If nginx/IIS, either skip .htaccess or add an equivalent CORS header
-   for /health.txt.
+3. If the server is Apache, keep .htaccess (CORS for health.txt / tools probe).
+   If nginx/IIS, add CORS Allow-Origin * for /health.txt and /tools/index.html
+   OR GitHub will not redirect until those are readable.
 
-4. After upload, open:
-   https://immhusnainali.github.io/?noredirect=1
-   to view the GitHub copy, and
-   https://immhusnainali.github.io/
-   to confirm redirect to https://mhusnain.online/
+4. Until tools/index.html is non-empty on mhusnain.online,
+   github.io will keep showing the full working site (no redirect).
 
-5. If the primary domain is down, GitHub Pages keeps serving this portfolio.
+5. After a correct upload, github.io visitors redirect to mhusnain.online.
