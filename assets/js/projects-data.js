@@ -30,7 +30,7 @@ window.PORTFOLIO_PROJECTS = [
       "Privacy-first PDF, image, developer, text, and utility tools that run fully in the browser with no backend.",
     category: "web",
     image: "assets/img/projects/tools-hub.jpg",
-    liveUrl: "tools/index.html",
+    liveUrl: "/tools/?v=2",
     repoUrl: "https://github.com/immhusnainali/immhusnainali.github.io",
     videoUrl: "",
     figmaUrl: "",
