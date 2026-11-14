@@ -64,55 +64,217 @@ serviceCards.forEach((card) => {
   });
 });
 
-/*=============== MIXITUP FILTER PORTFOLIO ===============*/
+/*=============== PROJECTS + MIXITUP ===============*/
 
-let mixer = mixitup(".work__container", {
-  selectors: {
-    target: ".work__card",
-  },
-  animation: {
-    duration: 300,
-  },
-});
+let mixer = null;
+let swiperTestimonial = null;
 
-/* Link active work */
-const workLinks = document.querySelectorAll(".work__item");
-
-function activeWork(workLink) {
-  workLinks.forEach((wl) => {
-    wl.classList.remove("active-work");
-  });
-  workLink.classList.add("active-work");
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
-workLinks.forEach((wl) => {
-  wl.addEventListener("click", () => {
-    activeWork(wl);
+function buildProjectCard(project) {
+  const classes = ["work__card", "mix", project.category || "web"];
+  if (project.liveUrl) classes.push("live");
+  if (project.videoUrl) classes.push("video");
+
+  const badges = [];
+  if (project.liveUrl) badges.push('<span class="work__badge work__badge--live">Live</span>');
+  if (project.videoUrl) badges.push('<span class="work__badge work__badge--video">Video</span>');
+  if (project.repoUrl) badges.push('<span class="work__badge">GitHub</span>');
+  if (project.figmaUrl) badges.push('<span class="work__badge">Figma</span>');
+
+  const actions = [];
+  if (project.liveUrl) {
+    const isTools =
+      project.id === "browser-tools-hub" ||
+      /(?:^|\/)tools(?:\/|$)/.test(String(project.liveUrl || ""));
+    actions.push(
+      `<a href="${escapeHtml(project.liveUrl)}" class="work__button"${
+        isTools ? ' data-tools-entry' : ' target="_blank" rel="noopener noreferrer"'
+      }>Live <i class='bx bx-right-arrow work__icon'></i></a>`
+    );
+  }
+  if (project.videoUrl) {
+    actions.push(
+      `<a href="${escapeHtml(project.videoUrl)}" class="work__button" target="_blank" rel="noopener noreferrer">Watch <i class='bx bx-play-circle work__icon'></i></a>`
+    );
+  }
+  if (project.repoUrl) {
+    actions.push(
+      `<a href="${escapeHtml(project.repoUrl)}" class="work__button" target="_blank" rel="noopener noreferrer">Code <i class='bx bx-code-alt work__icon'></i></a>`
+    );
+  }
+  if (project.figmaUrl) {
+    actions.push(
+      `<a href="${escapeHtml(project.figmaUrl)}" class="work__button" target="_blank" rel="noopener noreferrer">Figma <i class='bx bx-right-arrow work__icon'></i></a>`
+    );
+  }
+
+  return `
+    <article class="${classes.join(" ")}" data-project-id="${escapeHtml(project.id)}">
+      <div class="work__media">
+        <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" class="work__img" loading="lazy" decoding="async">
+        <div class="work__badges">${badges.join("")}</div>
+      </div>
+      <h3 class="work__title">${escapeHtml(project.title)}</h3>
+      <p class="work__description">${escapeHtml(project.description)}</p>
+      <div class="work__actions">${actions.join("")}</div>
+    </article>
+  `;
+}
+
+function renderProjects() {
+  const container = document.getElementById("work-projects");
+  if (!container) return;
+
+  const projects = Array.isArray(window.PORTFOLIO_PROJECTS)
+    ? window.PORTFOLIO_PROJECTS
+    : [];
+
+  container.innerHTML = projects.map(buildProjectCard).join("");
+}
+
+function initWorkFilters() {
+  renderProjects();
+
+  if (typeof mixitup === "function" && document.querySelector(".work__container")) {
+    try {
+      mixer = mixitup(".work__container", {
+        selectors: {
+          target: ".work__card",
+        },
+        animation: {
+          duration: 300,
+        },
+      });
+    } catch (error) {
+      mixer = null;
+    }
+  }
+
+  const workLinks = document.querySelectorAll(".work__item");
+
+  function activeWork(workLink) {
+    workLinks.forEach((wl) => {
+      wl.classList.remove("active-work");
+    });
+    workLink.classList.add("active-work");
+  }
+
+  workLinks.forEach((wl) => {
+    wl.addEventListener("click", () => {
+      activeWork(wl);
+    });
   });
-});
+}
+
+initWorkFilters();
 
 /*=============== SWIPER TESTIMONIAL ===============*/
 
-let swiperTestimonial = new Swiper(".testimonial__container", {
-  spaceBetween: 24,
-  loop: true,
-  grabCursor: true,
+function starsMarkup(rating) {
+  const filled = String.fromCharCode(9733);
+  const empty = String.fromCharCode(9734);
+  const rounded = Math.max(0, Math.min(5, Math.round(Number(rating) || 0)));
+  return filled.repeat(rounded) + empty.repeat(5 - rounded);
+}
 
-  pagination: {
-    el: ".swiper-pagination",
-    clickable: true,
-  },
+function buildTestimonialSlide(item) {
+  const name = escapeHtml(item.name || "Anonymous");
+  const message = escapeHtml(item.message || "Rated this portfolio.");
+  const image = item.image
+    ? `<img src="${escapeHtml(item.image)}" alt="${name}" class="testimonial__img" loading="lazy" decoding="async">`
+    : `<div class="testimonial__avatar" aria-hidden="true">${name
+        .split(/\s+/)
+        .map((part) => part.charAt(0))
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()}</div>`;
 
-  breakpoints: {
-    576: {
-      slidesPerView: 2,
+  return `
+    <div class="testimonial__card swiper-slide">
+      ${image}
+      <h3 class="testimonial__name">${name}</h3>
+      <p class="testimonial__rating" aria-label="${escapeHtml(String(item.rating || 5))} out of 5">${starsMarkup(item.rating || 5)}</p>
+      <p class="testimonial__description">${message}</p>
+    </div>
+  `;
+}
+
+function collectTestimonialItems(reviews) {
+  const seeded = Array.isArray(window.PORTFOLIO_TESTIMONIALS)
+    ? window.PORTFOLIO_TESTIMONIALS
+    : [];
+  const dynamic = (reviews || [])
+    .filter((review) => review && review.name)
+    .map((review) => ({
+      name: review.name,
+      message: review.message || "Rated this portfolio.",
+      rating: review.rating,
+      image: "",
+    }));
+
+  const merged = [];
+  const seen = new Set();
+
+  [...seeded, ...dynamic].forEach((item) => {
+    const key = [
+      String(item.name || "").trim().toLowerCase(),
+      String(item.message || "").trim().toLowerCase(),
+      String(item.rating || ""),
+    ].join("|");
+    if (seen.has(key)) return;
+    seen.add(key);
+    merged.push(item);
+  });
+
+  return merged;
+}
+
+function initTestimonialSwiper() {
+  if (typeof Swiper !== "function") {
+    swiperTestimonial = null;
+    return;
+  }
+
+  if (swiperTestimonial && typeof swiperTestimonial.destroy === "function") {
+    swiperTestimonial.destroy(true, true);
+  }
+
+  swiperTestimonial = new Swiper(".testimonial__container", {
+    spaceBetween: 24,
+    loop: true,
+    grabCursor: true,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
     },
-    768: {
-      slidesPerView: 2,
-      spaceBetween: 48,
+    breakpoints: {
+      576: {
+        slidesPerView: 2,
+      },
+      768: {
+        slidesPerView: 2,
+        spaceBetween: 48,
+      },
     },
-  },
-});
+  });
+}
+
+function renderTestimonials(reviews) {
+  const wrapper = document.getElementById("testimonial-slides");
+  if (!wrapper) return;
+
+  const items = collectTestimonialItems(reviews);
+  wrapper.innerHTML = items.map(buildTestimonialSlide).join("");
+  initTestimonialSwiper();
+}
 
 /*=============== SCROLL SECTIONS ACTIVE LINK ===============*/
 
@@ -234,25 +396,16 @@ const languageTargets = [
   { key: "workFilterWeb", selector: ".work__filters .work__item:nth-child(2)" },
   { key: "workFilterDesktop", selector: ".work__filters .work__item:nth-child(3)" },
   { key: "workFilterDesign", selector: ".work__filters .work__item:nth-child(4)" },
-  { key: "workCard1Title", selector: ".work__card:nth-child(1) .work__title" },
-  { key: "workCard2Title", selector: ".work__card:nth-child(2) .work__title" },
-  { key: "workCard3Title", selector: ".work__card:nth-child(3) .work__title" },
-  { key: "workCard4Title", selector: ".work__card:nth-child(4) .work__title" },
-  { key: "workCard5Title", selector: ".work__card:nth-child(5) .work__title" },
-  {
-    key: "workDemoButton",
-    selector: ".work__button:not([data-tools-entry])",
-    property: "innerHTML",
-  },
-  { key: "workToolsButton", selector: "[data-tools-entry]", property: "innerHTML" },
+  { key: "workFilterLive", selector: ".work__filters .work__item:nth-child(5)" },
+  { key: "workFilterVideo", selector: ".work__filters .work__item:nth-child(6)" },
   { key: "toolsSpotlightEyebrow", selector: "[data-tools-spotlight-eyebrow]" },
   { key: "toolsSpotlightTitle", selector: "[data-tools-spotlight-title]" },
   { key: "toolsSpotlightText", selector: "[data-tools-spotlight-text]" },
   { key: "toolsSpotlightLive", selector: "[data-tools-spotlight-live]" },
   { key: "toolsSpotlightPages", selector: "[data-tools-spotlight-pages]" },
   { key: "toolsSpotlightButton", selector: "[data-tools-spotlight-button]" },
-  { key: "testimonialSubtitle", selector: ".testimonial.section .section__subtitle" },
-  { key: "testimonialTitle", selector: ".testimonial.section .section__title" },
+  { key: "testimonialSubtitle", selector: "#testimonials .section__subtitle" },
+  { key: "testimonialTitle", selector: "#testimonials .section__title" },
   { key: "contactSubtitle", selector: "#contact .section__subtitle" },
   { key: "contactTitle", selector: "#contact .section__title" },
   { key: "contactTalkToMe", selector: "#contact .contact__title-info" },
@@ -272,8 +425,9 @@ const languageTargets = [
   { key: "footerAbout", selector: ".footer__item:nth-child(2) .footer__link" },
   { key: "footerSkills", selector: ".footer__item:nth-child(3) .footer__link" },
   { key: "footerWork", selector: ".footer__item:nth-child(4) .footer__link" },
-  { key: "footerTools", selector: ".footer__item:nth-child(5) .footer__link" },
-  { key: "footerContact", selector: ".footer__item:nth-child(6) .footer__link" },
+  { key: "footerReviews", selector: ".footer__item:nth-child(5) .footer__link" },
+  { key: "footerTools", selector: ".footer__item:nth-child(6) .footer__link" },
+  { key: "footerContact", selector: ".footer__item:nth-child(7) .footer__link" },
   { key: "shareModalTitle", selector: "#share-modal-title" },
   { key: "shareModalDescription", selector: "#share-modal-description" },
   { key: "shareModalLinkLabel", selector: "#share-modal-link-label" },
@@ -331,13 +485,8 @@ const translations = {
     workFilterWeb: "Web",
     workFilterDesktop: "Desktop",
     workFilterDesign: "UI/UX Design",
-    workCard1Title: "Web Application",
-    workCard2Title: "Desktop Application",
-    workCard3Title: "Web Design",
-    workCard4Title: "App Design",
-    workCard5Title: "Browser Tools Hub",
-    workDemoButton: "Demo <i class='bx bx-right-arrow work__icon'></i>",
-    workToolsButton: "Explore <i class='bx bx-right-arrow work__icon'></i>",
+    workFilterLive: "Live",
+    workFilterVideo: "Video",
     toolsSpotlightEyebrow: "Browser-first toolkit",
     toolsSpotlightTitle: "Browser Tools Hub",
     toolsSpotlightText:
@@ -366,6 +515,7 @@ const translations = {
     footerAbout: "About",
     footerSkills: "Skills",
     footerWork: "Work",
+    footerReviews: "Reviews",
     footerTools: "Tools",
     footerContact: "Contact",
     shareModalTitle: "Share Portfolio",
@@ -415,13 +565,8 @@ const translations = {
     workFilterWeb: "Web",
     workFilterDesktop: "Desktop",
     workFilterDesign: "UI/UX Design",
-    workCard1Title: "Web Application",
-    workCard2Title: "Desktop Application",
-    workCard3Title: "Web Design",
-    workCard4Title: "App Design",
-    workCard5Title: "Browser Tools Hub",
-    workDemoButton: "Demo dekhein <i class='bx bx-right-arrow work__icon'></i>",
-    workToolsButton: "Tools dekhein <i class='bx bx-right-arrow work__icon'></i>",
+    workFilterLive: "Live",
+    workFilterVideo: "Video",
     toolsSpotlightEyebrow: "Browser-first toolkit",
     toolsSpotlightTitle: "Browser Tools Hub",
     toolsSpotlightText:
@@ -450,6 +595,7 @@ const translations = {
     footerAbout: "About",
     footerSkills: "Skills",
     footerWork: "Work",
+    footerReviews: "Reviews",
     footerTools: "Tools",
     footerContact: "Contact",
     shareModalTitle: "Portfolio Share Karein",
@@ -499,13 +645,8 @@ const translations = {
     workFilterWeb: "Web",
     workFilterDesktop: "Escritorio",
     workFilterDesign: "Diseno UI/UX",
-    workCard1Title: "Aplicacion Web",
-    workCard2Title: "Aplicacion de Escritorio",
-    workCard3Title: "Diseno Web",
-    workCard4Title: "Diseno de App",
-    workCard5Title: "Centro de Herramientas",
-    workDemoButton: "Demo <i class='bx bx-right-arrow work__icon'></i>",
-    workToolsButton: "Explorar <i class='bx bx-right-arrow work__icon'></i>",
+    workFilterLive: "En vivo",
+    workFilterVideo: "Video",
     toolsSpotlightEyebrow: "Kit de herramientas en navegador",
     toolsSpotlightTitle: "Centro de Herramientas",
     toolsSpotlightText:
@@ -534,6 +675,7 @@ const translations = {
     footerAbout: "Sobre mi",
     footerSkills: "Habilidades",
     footerWork: "Trabajo",
+    footerReviews: "Resenas",
     footerTools: "Herramientas",
     footerContact: "Contacto",
     shareModalTitle: "Compartir Portafolio",
@@ -583,13 +725,8 @@ const translations = {
     workFilterWeb: "Web",
     workFilterDesktop: "Desktop",
     workFilterDesign: "Design UI/UX",
-    workCard1Title: "Application Web",
-    workCard2Title: "Application Desktop",
-    workCard3Title: "Design Web",
-    workCard4Title: "Design App",
-    workCard5Title: "Hub d'Outils",
-    workDemoButton: "Demo <i class='bx bx-right-arrow work__icon'></i>",
-    workToolsButton: "Explorer <i class='bx bx-right-arrow work__icon'></i>",
+    workFilterLive: "En ligne",
+    workFilterVideo: "Video",
     toolsSpotlightEyebrow: "Boite a outils navigateur",
     toolsSpotlightTitle: "Hub d'Outils",
     toolsSpotlightText:
@@ -618,6 +755,7 @@ const translations = {
     footerAbout: "A propos",
     footerSkills: "Competences",
     footerWork: "Travail",
+    footerReviews: "Avis",
     footerTools: "Outils",
     footerContact: "Contact",
     shareModalTitle: "Partager Portfolio",
@@ -667,13 +805,8 @@ const translations = {
     workFilterWeb: "ويب",
     workFilterDesktop: "سطح المكتب",
     workFilterDesign: "تصميم UI/UX",
-    workCard1Title: "تطبيق ويب",
-    workCard2Title: "تطبيق سطح المكتب",
-    workCard3Title: "تصميم ويب",
-    workCard4Title: "تصميم تطبيق",
-    workDemoButton: "عرض تجريبي <i class='bx bx-right-arrow work__icon'></i>",
-    workCard5Title: "مركز أدوات المتصفح",
-    workToolsButton: "استكشف <i class='bx bx-right-arrow work__icon'></i>",
+    workFilterLive: "مباشر",
+    workFilterVideo: "فيديو",
     toolsSpotlightEyebrow: "أدوات تعمل في المتصفح",
     toolsSpotlightTitle: "مركز أدوات المتصفح",
     toolsSpotlightText:
@@ -702,8 +835,12 @@ const translations = {
     footerAbout: "نبذة",
     footerSkills: "المهارات",
     footerWork: "الاعمال",
+    footerReviews: "المراجعات",
     footerTools: "الأدوات",
     footerContact: "التواصل",
+    shareModalTitle: "مشاركة الملف",
+    shareModalDescription: "امسح رمز QR هذا على جهاز آخر.",
+    shareModalLinkLabel: "رابط مباشر",
   },
 };
 
@@ -803,34 +940,38 @@ const ratingLabelEl = document.getElementById("home-rating-label");
 const reviewTextByLang = {
   en: {
     reviewsLabel: "reviews",
-    emptyStatus: "Published reviews are loaded from reviews.txt.",
-    savedStatus: "Review submitted successfully on this device.",
+    emptyStatus:
+      "Published reviews load from reviews.txt. New reviews save on this device and appear in Testimonials.",
+    savedStatus: "Review saved on this device and added to Testimonials.",
     invalidRating: "Please select a valid rating.",
   },
   ur: {
     reviewsLabel: "reviews",
-    emptyStatus: "Published reviews reviews.txt se load hoti hain.",
-    savedStatus: "Review is device par submit ho gaya.",
+    emptyStatus:
+      "Published reviews reviews.txt se load hoti hain. Nayi reviews is device par save hoti hain aur Testimonials mein dikhti hain.",
+    savedStatus: "Review is device par save ho gayi aur Testimonials mein add ho gayi.",
     invalidRating: "Valid rating select karein.",
   },
   es: {
     reviewsLabel: "resenas",
-    emptyStatus: "Las resenas publicadas se cargan desde reviews.txt.",
-    savedStatus: "Resena enviada en este dispositivo.",
+    emptyStatus:
+      "Las resenas publicadas se cargan desde reviews.txt. Las nuevas se guardan en este dispositivo y aparecen en Testimonios.",
+    savedStatus: "Resena guardada en este dispositivo y anadida a Testimonios.",
     invalidRating: "Selecciona una calificacion valida.",
   },
   fr: {
     reviewsLabel: "avis",
-    emptyStatus: "Les avis publies sont charges depuis reviews.txt.",
-    savedStatus: "Avis envoye sur cet appareil.",
+    emptyStatus:
+      "Les avis publies sont charges depuis reviews.txt. Les nouveaux avis sont enregistres sur cet appareil et apparaissent dans Temoignages.",
+    savedStatus: "Avis enregistre sur cet appareil et ajoute aux Temoignages.",
     invalidRating: "Veuillez selectionner une note valide.",
   },
   ar: {
     reviewsLabel: "\u0645\u0631\u0627\u062c\u0639\u0627\u062a",
     emptyStatus:
-      "\u064a\u062a\u0645 \u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u0645\u0631\u0627\u062c\u0639\u0627\u062a \u0627\u0644\u0645\u0646\u0634\u0648\u0631\u0629 \u0645\u0646 reviews.txt.",
+      "\u062a\u064f\u062d\u0645\u064e\u0644 \u0627\u0644\u0645\u0631\u0627\u062c\u0639\u0627\u062a \u0627\u0644\u0645\u0646\u0634\u0648\u0631\u0629 \u0645\u0646 reviews.txt. \u0627\u0644\u062c\u062f\u064a\u062f\u0629 \u062a\u064f\u062d\u0641\u064e\u0638 \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u062c\u0647\u0627\u0632 \u0648\u062a\u0638\u0647\u0631 \u0641\u064a \u0622\u0631\u0627\u0621 \u0627\u0644\u0639\u0645\u0644\u0627\u0621.",
     savedStatus:
-      "\u062a\u0645 \u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0645\u0631\u0627\u062c\u0639\u0629 \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u062c\u0647\u0627\u0632.",
+      "\u062a\u0645 \u062d\u0641\u0638 \u0627\u0644\u0645\u0631\u0627\u062c\u0639\u0629 \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u062c\u0647\u0627\u0632 \u0648\u0625\u0636\u0627\u0641\u062a\u0647\u0627 \u0625\u0644\u0649 \u0622\u0631\u0627\u0621 \u0627\u0644\u0639\u0645\u0644\u0627\u0621.",
     invalidRating:
       "\u064a\u0631\u062c\u0649 \u0627\u062e\u062a\u064a\u0627\u0631 \u062a\u0642\u064a\u064a\u0645 \u0635\u0627\u0644\u062d.",
   },
@@ -940,23 +1081,26 @@ async function loadPublishedReviews() {
 }
 
 function updateReviewSummary() {
-  if (!ratingStarsEl || !ratingValueEl || !ratingCountEl || !ratingLabelEl) return;
-
   const reviews = readStoredReviews();
-  const count = reviews.length;
-  const average =
-    count > 0
-      ? reviews.reduce((sum, item) => sum + Number(item.rating || 0), 0) / count
-      : 0;
 
-  const rounded = Math.round(average);
-  const filledStar = String.fromCharCode(9733);
-  const emptyStar = String.fromCharCode(9734);
-  ratingStarsEl.textContent =
-    filledStar.repeat(rounded) + emptyStar.repeat(5 - rounded);
-  ratingValueEl.textContent = average.toFixed(1);
-  ratingCountEl.textContent = String(count);
-  ratingLabelEl.textContent = getReviewTexts().reviewsLabel;
+  if (ratingStarsEl && ratingValueEl && ratingCountEl && ratingLabelEl) {
+    const count = reviews.length;
+    const average =
+      count > 0
+        ? reviews.reduce((sum, item) => sum + Number(item.rating || 0), 0) / count
+        : 0;
+
+    const rounded = Math.round(average);
+    const filledStar = String.fromCharCode(9733);
+    const emptyStar = String.fromCharCode(9734);
+    ratingStarsEl.textContent =
+      filledStar.repeat(rounded) + emptyStar.repeat(5 - rounded);
+    ratingValueEl.textContent = average.toFixed(1);
+    ratingCountEl.textContent = String(count);
+    ratingLabelEl.textContent = getReviewTexts().reviewsLabel;
+  }
+
+  renderTestimonials(reviews);
 }
 
 function setReviewStatus(message) {
@@ -984,6 +1128,11 @@ function closeReviewModal() {
 }
 
 function getShareUrl() {
+  const host = (window.location.hostname || "").toLowerCase();
+  if (host.endsWith("github.io")) {
+    return "https://mhusnain.online/";
+  }
+
   const shareUrl = new URL(window.location.href);
   shareUrl.hash = "";
   shareUrl.search = "";
@@ -1458,90 +1607,92 @@ function initCodeCursor() {
 initCodeCursor();
 
 /*=============== SCROLL REVEAL ANIMATION ===============*/
-const sr = ScrollReveal({
-  origin: "top",
-  distance: "60px",
-  duration: 2500,
-  delay: 400,
-  reset: true,
-});
+if (typeof ScrollReveal === "function") {
+  const sr = ScrollReveal({
+    origin: "top",
+    distance: "60px",
+    duration: 2500,
+    delay: 400,
+    reset: true,
+  });
 
-sr.reveal(`.nav__menu`, {
-  delay: 100,
-  scale: 0.1,
-  origin: "bottom",
-  distance: "300px",
-});
+  sr.reveal(`.nav__menu`, {
+    delay: 100,
+    scale: 0.1,
+    origin: "bottom",
+    distance: "300px",
+  });
 
-sr.reveal(`.home__data`);
-sr.reveal(`.home__handle`, {
-  delay: 100,
-});
+  sr.reveal(`.home__data`);
+  sr.reveal(`.home__handle`, {
+    delay: 100,
+  });
 
-sr.reveal(`.home__social, .home__scroll`, {
-  delay: 100,
-  origin: "bottom",
-});
+  sr.reveal(`.home__social, .home__scroll`, {
+    delay: 100,
+    origin: "bottom",
+  });
 
-sr.reveal(`.about__img`, {
-  delay: 100,
-  origin: "left",
-  scale: 0.9,
-  distance: "30px",
-});
+  sr.reveal(`.about__img`, {
+    delay: 100,
+    origin: "left",
+    scale: 0.9,
+    distance: "30px",
+  });
 
-sr.reveal(`.about__data, .about__description, .about__button-contact`, {
-  delay: 100,
-  scale: 0.9,
-  origin: "right",
-  distance: "30px",
-});
+  sr.reveal(`.about__data, .about__description, .about__button-contact`, {
+    delay: 100,
+    scale: 0.9,
+    origin: "right",
+    distance: "30px",
+  });
 
-sr.reveal(`.skills__content`, {
-  delay: 100,
-  scale: 0.9,
-  origin: "bottom",
-  distance: "30px",
-});
+  sr.reveal(`.skills__content`, {
+    delay: 100,
+    scale: 0.9,
+    origin: "bottom",
+    distance: "30px",
+  });
 
-sr.reveal(`.services__title, .services__button`, {
-  delay: 100,
-  scale: 0.9,
-  origin: "top",
-  distance: "30px",
-});
+  sr.reveal(`.services__title, .services__button`, {
+    delay: 100,
+    scale: 0.9,
+    origin: "top",
+    distance: "30px",
+  });
 
-sr.reveal(`.work__card`, {
-  delay: 100,
-  scale: 0.9,
-  origin: "bottom",
-  distance: "30px",
-});
+  sr.reveal(`.work__card`, {
+    delay: 100,
+    scale: 0.9,
+    origin: "bottom",
+    distance: "30px",
+  });
 
-sr.reveal(`.testimonial__container`, {
-  delay: 100,
-  scale: 0.9,
-  origin: "bottom",
-  distance: "30px",
-});
+  sr.reveal(`.testimonial__container`, {
+    delay: 100,
+    scale: 0.9,
+    origin: "bottom",
+    distance: "30px",
+  });
 
-sr.reveal(`.contact__info, .contact__title-info`, {
-  delay: 100,
-  scale: 0.9,
-  origin: "left",
-  distance: "30px",
-});
+  sr.reveal(`.contact__info, .contact__title-info`, {
+    delay: 100,
+    scale: 0.9,
+    origin: "left",
+    distance: "30px",
+  });
 
-sr.reveal(`.contact__form, .contact__title-form`, {
-  delay: 100,
-  scale: 0.9,
-  origin: "right",
-  distance: "30px",
-});
+  sr.reveal(`.contact__form, .contact__title-form`, {
+    delay: 100,
+    scale: 0.9,
+    origin: "right",
+    distance: "30px",
+  });
 
-sr.reveal(`.footer, .footer__container`, {
-  delay: 100,
-  scale: 0.9,
-  origin: "bottom",
-  distance: "30px",
-});
+  sr.reveal(`.footer, .footer__container`, {
+    delay: 100,
+    scale: 0.9,
+    origin: "bottom",
+    distance: "30px",
+  });
+}

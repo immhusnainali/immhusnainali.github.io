@@ -1,0 +1,21 @@
+Upload checklist for mhusnain.online (your other server)
+=======================================================
+
+1. Upload the full site contents to your domain document root
+   (same files as this repo root: index.html, health.txt, assets/, tools/, etc.).
+
+2. Make sure health.txt is reachable at:
+   https://mhusnain.online/health.txt
+   It must return plain text: ok
+
+3. If the server is Apache, keep .htaccess (CORS for health.txt).
+   If nginx/IIS, either skip .htaccess or add an equivalent CORS header
+   for /health.txt.
+
+4. After upload, open:
+   https://immhusnainali.github.io/?noredirect=1
+   to view the GitHub copy, and
+   https://immhusnainali.github.io/
+   to confirm redirect to https://mhusnain.online/
+
+5. If the primary domain is down, GitHub Pages keeps serving this portfolio.

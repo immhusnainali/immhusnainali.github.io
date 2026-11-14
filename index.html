@@ -14,6 +14,7 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="msapplication-config" content="assets/favicons/browserconfig.xml">
     <meta name="theme-color" content="#a789d4">
+    <link rel="canonical" href="https://mhusnain.online/">
 
     <!--=============== BOXICONS ===============-->
     <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
@@ -25,6 +26,56 @@
     <link rel="stylesheet" href="assets/css/styles.css">
 
     <title>Muhammad Husnain Ali | Portfolio</title>
+    <script>
+      (function () {
+        var PRIMARY = "https://mhusnain.online";
+        var host = (location.hostname || "").toLowerCase();
+        if (host === "mhusnain.online" || host === "www.mhusnain.online") return;
+        if (host === "localhost" || host === "127.0.0.1") return;
+        if (!/\.github\.io$/i.test(host)) return;
+        if (new URLSearchParams(location.search).get("noredirect") === "1") return;
+
+        var healthUrl = PRIMARY + "/health.txt?t=" + Date.now();
+        var redirected = false;
+        var controller = new AbortController();
+        var timer = setTimeout(function () {
+          controller.abort();
+        }, 2000);
+
+        // Only redirect when health.txt is readable with CORS and returns ok.
+        // Do not use no-cors: a coming-soon page would look "up" and break /tools/.
+        fetch(healthUrl, {
+          mode: "cors",
+          cache: "no-store",
+          signal: controller.signal,
+        })
+          .then(function (response) {
+            if (!response.ok) throw new Error("health-failed");
+            return response.text();
+          })
+          .then(function (text) {
+            clearTimeout(timer);
+            if (String(text || "").trim().toLowerCase().indexOf("ok") === -1) {
+              throw new Error("health-invalid");
+            }
+            if (redirected) return;
+            redirected = true;
+            var params = new URLSearchParams(location.search);
+            params.delete("noredirect");
+            var query = params.toString();
+            location.replace(
+              PRIMARY +
+                (location.pathname || "/") +
+                (query ? "?" + query : "") +
+                location.hash
+            );
+          })
+          .catch(function () {
+            clearTimeout(timer);
+            /* Primary not ready — stay on GitHub Pages. */
+          });
+      })();
+    </script>
 </head>
 
 <body>
@@ -56,6 +107,12 @@
                     <li class="nav__item">
                         <a href="#work" class="nav__link">
                             <i class='bx bx-briefcase-alt-2'></i>
+                        </a>
+                    </li>
+
+                    <li class="nav__item">
+                        <a href="#testimonials" class="nav__link">
+                            <i class='bx bx-message-rounded-dots'></i>
                         </a>
                     </li>
 
@@ -312,6 +369,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
         </section>
 
         <!--=============== SERVICES ===============-->
@@ -515,10 +573,12 @@
             <h2 class="section__title">Recent Works</h2>
 
             <div class="work__filters">
-                <span class="work__item active-work" data-filter='all'>All</span>
-                <span class=" work__item" data-filter='.web'>Web</span>
-                <span class=" work__item" data-filter='.desktop'>Desktop</span>
-                <span class=" work__item" data-filter='.design'>UI/UX Design</span>
+                <span class="work__item active-work" data-filter="all">All</span>
+                <span class="work__item" data-filter=".web">Web</span>
+                <span class="work__item" data-filter=".desktop">Desktop</span>
+                <span class="work__item" data-filter=".design">UI/UX Design</span>
+                <span class="work__item" data-filter=".live">Live</span>
+                <span class="work__item" data-filter=".video">Video</span>
             </div>
 
             <article class="tools-spotlight">
@@ -541,101 +601,23 @@
                     </div>
                 </div>
 
-                <a href="/tools/" class="button tools-spotlight__button" data-tools-spotlight-button>
+                <a href="tools/index.html" class="button tools-spotlight__button" data-tools-spotlight-button>
                     Open Tools Hub
                 </a>
             </article>
 
-            <div class="work__container container grid">
-                <div class="work__card mix web">
-                    <img src="assets/img/work1.jpg" alt="" class="work__img" loading="lazy" decoding="async">
-
-                    <h3 class="work__title">Web Application</h3>
-
-                    <a href="https://github.com/immhusnainali/zameen_php" class="work__button">
-                        Demo <i class='bx bx-right-arrow work__icon'></i>
-                    </a>
-                </div>
-
-                <div class="work__card mix desktop">
-                    <img src="assets/img/work2.jpg" alt="" class="work__img" loading="lazy" decoding="async">
-
-                    <h3 class="work__title">Desktop Application</h3>
-
-                    <a href="https://github.com/immhusnainali/FOS_Desktop" class="work__button">
-                        Demo <i class='bx bx-right-arrow work__icon'></i>
-                    </a>
-                </div>
-
-                <div class="work__card mix design">
-                    <img src="assets/img/work4.jpg" alt="" class="work__img" loading="lazy" decoding="async">
-
-                    <h3 class="work__title">Web Design</h3>
-
-                    <a href="https://www.figma.com/proto/kB2qsAX8vHTl381B6btsAA/Home-Page?node-id=0%3A1" class="work__button">
-                        Demo <i class='bx bx-right-arrow work__icon'></i>
-                    </a>
-                </div>
-
-                <div class="work__card mix design">
-                    <img src="assets/img/work5.jpg" alt="" class="work__img" loading="lazy" decoding="async">
-
-                    <h3 class="work__title">App Design</h3>
-
-                    <a href="https://www.figma.com/file/pXyZbQhNgk0GTWvGlooQL0/Book-Era?t=bz4hrMM6uKcaszt0-1" class="work__button">
-                        Demo <i class='bx bx-right-arrow work__icon'></i>
-                    </a>
-                </div>
-
-                <div class="work__card mix web">
-                    <img src="assets/img/work3.jpg" alt="Browser Tools Hub preview" class="work__img" loading="lazy" decoding="async">
-
-                    <h3 class="work__title">Browser Tools Hub</h3>
-
-                    <a href="/tools/" class="work__button" data-tools-entry>
-                        Explore <i class='bx bx-right-arrow work__icon'></i>
-                    </a>
-                </div>
-
-            </div>
+            <div class="work__container container grid" id="work-projects"></div>
         </section>
 
         <!--=============== TESTIMONIALS ===============-->
-        <section class="testimonial section">
+        <section class="testimonial section" id="testimonials">
             <span class="section__subtitle">My clients say</span>
             <h2 class="section__title">Testimonials</h2>
 
             <div class="testimonial__container container swiper">
-                <div class="swiper-wrapper">
-                    <div class="testimonial__card swiper-slide">
-                        <img src="assets/img/testimonial2.png" alt="" class="testimonial__img" loading="lazy" decoding="async">
-
-                        <h3 class="testimonial__name">Noor Fatima</h3>
-                        <p class="testimonial__description">
-                           "I would like to express my sincere appreciation for the work that you did. You have clearly demonstrated a high level of skill and dedication to the task at hand. Your attention to detail and commitment to excellence have been impressive."
-                        </p>
-                    </div>
-                    <div class="testimonial__card swiper-slide">
-                        <img src="assets/img/testimonial3.png" alt="" class="testimonial__img" loading="lazy" decoding="async">
-
-                        <h3 class="testimonial__name">Nouman Aziz</h3>
-                        <p class="testimonial__description">
-                            "I had worked with that guy his work is really amazing and had a lot of knowledge about programming. He worked with honesty and done project within time. He is absolutely amazing and will be looking to work with him again."
-                        </p>
-                    </div>
-                    <div class="testimonial__card swiper-slide">
-                        <img src="assets/img/testimonial1.png" alt="" class="testimonial__img" loading="lazy" decoding="async">
-
-                        <h3 class="testimonial__name">Muhammad Umar Farooq</h3>
-                        <p class="testimonial__description">
-                            A really good job, all aspects of the project were done well.
-                            Very creative and thoughtful. I was very impressed and would recommend this to anyone.
-                        </p>
-                    </div>
-                    
-                </div>
+                <div class="swiper-wrapper" id="testimonial-slides"></div>
                 <div class="swiper-pagination"></div>
-            </div>              
+            </div>
         </section>
 
         <div class="review-modal" id="review-modal" aria-hidden="true">
@@ -673,7 +655,7 @@
                     </div>
 
                     <p class="review__note" id="review-status">
-                        Published reviews are visible to everyone.
+                        Published reviews load from reviews.txt. New reviews save on this device and appear in Testimonials.
                     </p>
                 </form>
             </div>
@@ -750,7 +732,7 @@
                     </form>
 
                 </div>
-
+            </div>
         </section>
     </main>
 
@@ -774,7 +756,10 @@
                     <a href="#work" class="footer__link">Work</a>
                 </li>
                 <li class="footer__item">
-                    <a href="/tools/" class="footer__link">Tools</a>
+                    <a href="#testimonials" class="footer__link">Reviews</a>
+                </li>
+                <li class="footer__item">
+                    <a href="tools/index.html" class="footer__link">Tools</a>
                 </li>
                 <li class="footer__item">
                     <a href="#contact" class="footer__link">Contact</a>
@@ -833,15 +818,16 @@
     </div>
 
     <!--=============== SCROLLREVEAL ===============-->
-
-    <!-- <script src="assets/js/scrollreveal.min.js"></script> -->
-    <script src="https://unpkg.com/scrollreveal/dist/scrollreveal.min.js"></script>
+    <script src="assets/js/scrollreveal.min.js"></script>
 
     <!--=============== SWIPER JS ===============-->
     <script src="assets/js/swiper-bundle.min.js"></script>
 
     <!--=============== MIXITUP FILTER ===============-->
     <script src="assets/js/mixitup.min.js"></script>
+
+    <!--=============== PORTFOLIO DATA ===============-->
+    <script src="assets/js/projects-data.js"></script>
 
     <!--=============== MAIN JS ===============-->
     <script src="assets/js/main.js"></script>

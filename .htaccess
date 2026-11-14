@@ -1,0 +1,12 @@
+# Optional Apache helpers for mhusnain.online uploads.
+# Safe to omit on nginx/IIS — failover still works via no-cors probe.
+
+<IfModule mod_headers.c>
+  <Files "health.txt">
+    Header set Access-Control-Allow-Origin "*"
+    Header set Cache-Control "no-store, max-age=0"
+  </Files>
+</IfModule>
+
+# Prevent directory listing
+Options -Indexes
